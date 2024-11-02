@@ -19,37 +19,42 @@ GitHub APIを使ったユーザ検索ができるアプリです。
 
 ## 詳細
 
+### 共通Store
+
+* 検索したユーザの一覧データ、および詳細情報を持つ
+* SearchUsersViewとUserDetailViewの両方からアクセス可能にする
+
 ### ユーザ検索画面
 
-* SearchUsersStore
-  * 検索したユーザ一覧データを持つ
+* UserStore
+  * 検索したユーザ一覧データを保持し、詳細画面で選択されたユーザ情報を渡す
 * SearchUsersViewState
   * 検索窓の値を持つ
-  * Storeで検索したユーザデータを購読し、View表示用データに修正して自身のプロパティに反映する
+  * UserStoreで検索したユーザデータを購読し、View表示用データに修正して自身のプロパティに反映する
 * SearchUsersView
   * 検索窓
     * 文字入力するとViewStateを呼び出す
   * 検索結果を表示する
-    * タップされた場合、ユーザ名をUserDetailViewに渡して遷移
+    * タップされた場合、UserStoreでユーザ詳細を取得してからUserDetailViewに遷移
 
 ### ユーザ詳細画面
 
-* UserDetailStore
-  * 表示するユーザ名
-  * ユーザの情報
-  * ユーザのリポジトリ一覧
+* UserStore
+  * UserStore内にある選択されたユーザの詳細情報を参照
+* RepositoryStore
+  * 表示するユーザのリポジトリ一覧を管理
 * UserDetailViewState
-  * 表示するデータをStoreから購読し、View表示用に修正して自身のプロパティに反映する
+  * 表示するデータをUserStoreから購読し、View表示用に修正して自身のプロパティに反映する
   * 特にUIに関係して保持する情報はない
 * UserDetailView
   * ユーザ情報Viewとリポジトリ一覧を表示する
 
 ### ユーザ詳細のユーザ情報View
 
-* UserDetailStore
-  * こちらでも利用する
-* DetailViewState
-  * 表示するデータをStoreから購読し、View表示用に修正して自身のプロパティに反映する
-  * 特にUIに関係して保持する情報はない
-* DetailView
+* UserInfoView
   * ユーザ情報を表示する
+
+### ユーザ詳細のリポジトリ一覧View
+
+* UserRepositoryListView
+  * ユーザリポジト一覧を表示する
