@@ -11,6 +11,7 @@ struct SearchUsersView: View {
         NavigationView {
             if let searchUsers = state.users {
                 List {
+                    // TODO: アイコンを表示する必要がある
                     ForEach(searchUsers.items, id: \.userName) { item in
                         Text(item.userName)
                     }
@@ -23,7 +24,7 @@ struct SearchUsersView: View {
         .searchable(
             text: self.$state.searchText,
             placement: .navigationBarDrawer(displayMode: .always),
-            prompt: Text("入力してね")
+            prompt: Text("ユーザ名を入力")
         )
         .onChange(of: self.state.searchText) { searchText in
             Task {
