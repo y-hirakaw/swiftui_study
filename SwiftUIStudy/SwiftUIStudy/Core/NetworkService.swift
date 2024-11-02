@@ -1,8 +1,8 @@
 import Foundation
 
 /// 汎用的な通信を行うサービスクラス
-class NetworkService {
-    
+final class NetworkService: Sendable {
+
     // TODO: 今回GETしかしないのでmethod隠蔽しても良さそう
     /// リクエスト
     func request<T>(url: URL, method: String, headers: [String: String]) async throws -> T where T: Decodable {

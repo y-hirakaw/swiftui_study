@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		669FA7F32CD66A23006A5150 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 669FA7F22CD66A23006A5150 /* Dependencies */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		667776452CD3D04500F8B560 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				669FA7F32CD66A23006A5150 /* Dependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				667776362CD3D04300F8B560 /* SwiftUIStudy */,
 				667776472CD3D04500F8B560 /* SwiftUIStudyTests */,
 				667776512CD3D04500F8B560 /* SwiftUIStudyUITests */,
+				669FA7F12CD66A23006A5150 /* Frameworks */,
 				667776352CD3D04300F8B560 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				6677764E2CD3D04500F8B560 /* SwiftUIStudyUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		669FA7F12CD66A23006A5150 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = SwiftUIStudy;
 			packageProductDependencies = (
+				669FA7F22CD66A23006A5150 /* Dependencies */,
 			);
 			productName = SwiftUIStudy;
 			productReference = 667776342CD3D04300F8B560 /* SwiftUIStudy.app */;
@@ -576,6 +590,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		669FA7F22CD66A23006A5150 /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 667776612CD3D0DE00F8B560 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6677762C2CD3D04300F8B560 /* Project object */;
 }

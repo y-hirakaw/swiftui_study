@@ -1,7 +1,12 @@
 import Foundation
+import Dependencies
 
-class SearchUsersRepository {
-    
+protocol SearchUsersRepositoryProtocol: Sendable {
+    func fetchGitHubUsers(_ searchText: String) async throws -> SearchUsers
+}
+
+struct SearchUsersRepository: SearchUsersRepositoryProtocol {
+
     private let networkService: NetworkService
     
     init(networkService: NetworkService = NetworkService()) {
@@ -28,5 +33,16 @@ class SearchUsersRepository {
         let url = GitHubAPI.searchUsersURL(query: query)
         let headers = GitHubAPI.defaultHeaders()
         return try await networkService.request(url: url, method: "GET", headers: headers)
+    }
+}
+
+private enum SearchUsersRepositoryKey: DependencyKey {
+    static let liveValue: any SearchUsersRepositoryProtocol = SearchUsersRepository()
+}
+
+extension DependencyValues {
+    var searchUsersRepository: any SearchUsersRepositoryProtocol {
+        get { self[SearchUsersRepositoryKey.self] }
+        set { self[SearchUsersRepositoryKey.self] = newValue }
     }
 }
