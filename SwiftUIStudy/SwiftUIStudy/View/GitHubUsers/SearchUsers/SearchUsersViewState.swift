@@ -1,3 +1,4 @@
+import Foundation
 import Combine
 
 @MainActor
@@ -16,6 +17,16 @@ final class SearchUsersViewState: ObservableObject {
         // UserStoreのusersを購読
         self.store.$users
             .assign(to: \.users, on: self)
+            .store(in: &cancellables)
+
+        // 0.5秒変化がなければ検索を実行する
+        self.$searchText
+            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
+            .sink { [weak self] text in
+                Task {
+                    await self?.search()
+                }
+            }
             .store(in: &cancellables)
     }
 

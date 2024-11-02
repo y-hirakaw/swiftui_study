@@ -26,11 +26,6 @@ struct SearchUsersView: View {
             placement: .navigationBarDrawer(displayMode: .always),
             prompt: Text("ユーザ名を入力")
         )
-        .onChange(of: self.state.searchText) { searchText in
-            Task {
-                await self.state.search()
-            }
-        }
     }
 }
 
