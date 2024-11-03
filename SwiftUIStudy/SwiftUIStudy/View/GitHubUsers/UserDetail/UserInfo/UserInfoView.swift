@@ -26,12 +26,10 @@ struct UserInfoView: View {
                         }
                     }
                     .padding()
-                    HStack {
-                        Text("Username: \(userInfo.login)")
-                            .font(.headline)
-                        if let name = userInfo.name {
-                            Text("Name: \(name)")
-                        }
+                    Text("Username: \(userInfo.login)")
+                        .font(.headline)
+                    if let name = userInfo.name {
+                        Text("Name: \(name)")
                     }
                     HStack {
                         Image(systemName: "person.2")

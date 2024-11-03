@@ -14,7 +14,14 @@ struct UserRepoView: View {
             if let repositories = self.state.repositories {
                 List {
                     ForEach(repositories, id: \.name) { item in
-                        Text(item.name)
+                        Button(action: {
+                            if let url = URL(string: item.url) {
+                                UIApplication.shared.open(url)
+                            }
+                        }) {
+                            Text(item.name)
+//                            RepoLanguageView(self.user.userName, item.name)
+                        }
                     }
                 }
             } else {
