@@ -40,6 +40,7 @@ struct UserStoreTest {
         #expect(store.users?.totalCount == 2)
         #expect(store.users?.items[0].userName == "testName1")
         #expect(store.users?.items[1].avatarUrl == "https://avatar_url2")
+        #expect(store.errorMessage == nil)
     }
 
     @Test func searchUsersがエラーになった場合errorMessageが更新されること() async throws {
