@@ -13,7 +13,10 @@ struct SearchUsersView: View {
                 List {
                     // TODO: アイコンを表示する必要がある
                     ForEach(searchUsers.items, id: \.userName) { item in
-                        Text(item.userName)
+                        UserRowView(
+                            userName: item.userName,
+                            avatarURL: item.avatarUrl
+                        )
                     }
                 }
             } else {
