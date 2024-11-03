@@ -11,12 +11,15 @@ struct SearchUsersView: View {
         NavigationView {
             if let searchUsers = state.users {
                 List {
-                    // TODO: アイコンを表示する必要がある
                     ForEach(searchUsers.items, id: \.userName) { item in
-                        UserRowView(
-                            userName: item.userName,
-                            avatarURL: item.avatarUrl
-                        )
+                        NavigationLink(
+                            destination: UserDetailView(user: item)
+                        ) {
+                            UserRowView(
+                                userName: item.userName,
+                                avatarURL: item.avatarUrl
+                            )
+                        }
                     }
                 }
             } else {

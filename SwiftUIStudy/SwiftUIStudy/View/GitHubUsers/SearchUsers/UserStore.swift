@@ -1,4 +1,3 @@
-import SwiftUI
 import Combine
 import Dependencies
 
@@ -9,7 +8,6 @@ final class UserStore: ObservableObject {
     @Dependency(\.searchUsersRepository) private var searchUsersRepository
 
     @Published var users: SearchUsers?
-    @Published var selectedUser: SearchUsers.User?
 
     func searchUsers(query: String) async {
         do {
@@ -18,11 +16,6 @@ final class UserStore: ObservableObject {
             // TODO: エラーハンドリング
             print("\(#function) - \(error)")
         }
-    }
-
-    func selectUser(index: Int) {
-        guard let users else { return }
-        self.selectedUser = users.items[index]
     }
 }
 

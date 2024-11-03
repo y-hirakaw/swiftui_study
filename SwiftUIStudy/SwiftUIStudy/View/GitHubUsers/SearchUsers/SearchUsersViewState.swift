@@ -19,9 +19,10 @@ final class SearchUsersViewState: ObservableObject {
             .assign(to: \.users, on: self)
             .store(in: &cancellables)
 
-        // 0.5秒変化がなければ検索を実行する
+        // 空文字ではないかつ、0.5秒変化がなければ検索を実行する
         self.$searchText
             .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
+            .filter { !$0.isEmpty }
             .sink { [weak self] text in
                 Task {
                     await self?.search()
