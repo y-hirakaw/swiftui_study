@@ -32,6 +32,13 @@ struct SearchUsersView: View {
             placement: .navigationBarDrawer(displayMode: .always),
             prompt: Text("ユーザ名を入力")
         )
+        .alert("Error", isPresented: self.$state.isAlertPresented) {
+            // ダイアログアクション
+        } message: {
+            if let message = self.state.errorMessage {
+                Text(message)
+            }
+        }
     }
 }
 

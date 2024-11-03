@@ -8,13 +8,15 @@ final class UserStore: ObservableObject {
     @Dependency(\.searchUsersRepository) private var searchUsersRepository
 
     @Published var users: SearchUsers?
+    @Published var errorMessage: String?
 
     func searchUsers(query: String) async {
+        self.errorMessage = nil
         do {
             self.users = try await self.searchUsersRepository.fetchGitHubUsers(query)
         } catch {
-            // TODO: エラーハンドリング
-            print("\(#function) - \(error)")
+            self.users = nil
+            self.errorMessage = error.errorDescription
         }
     }
 }

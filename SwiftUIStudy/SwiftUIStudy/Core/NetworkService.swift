@@ -11,8 +11,33 @@ final class NetworkService: Sendable {
         headers.forEach {
             request.addValue($0.value, forHTTPHeaderField: $0.key)
         }
-        let (data, _) = try await URLSession.shared.data(for: request)
-        let response = try JSONDecoder().decode(T.self, from: data)
-        return response
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+            try self.validateHttpResponse(httpResponse)
+            do {
+                return try JSONDecoder().decode(T.self, from: data)
+            } catch {
+                throw NetworkError.decodingError(error)
+            }
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.networkError(error)
+        }
+    }
+
+    /// HTTPレスポンスの検証
+    /// - Parameter response: HTTPレスポンス
+    private func validateHttpResponse(_ response: HTTPURLResponse) throws {
+        switch response.statusCode {
+        case 200...299:
+            return
+        default:
+            throw NetworkError.httpError(statusCode: response.statusCode)
+        }
     }
 }

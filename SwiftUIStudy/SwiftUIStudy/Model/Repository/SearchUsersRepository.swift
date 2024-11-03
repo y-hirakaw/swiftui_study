@@ -2,7 +2,7 @@ import Foundation
 import Dependencies
 
 protocol SearchUsersRepositoryProtocol: Sendable {
-    func fetchGitHubUsers(_ searchText: String) async throws -> SearchUsers
+    func fetchGitHubUsers(_ searchText: String) async throws(NetworkError) -> SearchUsers
 }
 
 struct SearchUsersRepository: SearchUsersRepositoryProtocol {
@@ -14,17 +14,18 @@ struct SearchUsersRepository: SearchUsersRepositoryProtocol {
     }
 
     // TODO: 連続呼び出しの制御はしていない
-    func fetchGitHubUsers(_ searchText: String) async throws -> SearchUsers {
+    func fetchGitHubUsers(_ searchText: String) async throws(NetworkError) -> SearchUsers {
         do {
             return try await self.requestGitHubSearchUsers(searchText)
         } catch {
             // エラーハンドリング
             if error is URLError && (error as? URLError)?.code == .cancelled {
                 print("Search was cancelled")
-            } else {
+            } else if error is NetworkError {
                 print("Error: \(error)")
+                throw error as! NetworkError
             }
-            throw error
+            throw NetworkError.networkError(error)
         }
     }
     

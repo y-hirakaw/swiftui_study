@@ -6,12 +6,11 @@ import Dependencies
 struct MockSearchUsersRepository: SearchUsersRepositoryProtocol {
     var mockSearchUsers: SearchUsers
 
-    func fetchGitHubUsers(_ searchText: String) async throws -> SearchUsers {
+    func fetchGitHubUsers(_ searchText: String) async throws(NetworkError) -> SearchUsers {
         if searchText == "test" {
             return self.mockSearchUsers
         } else {
-            // TODO: エラーハンドリングするならエラー投げても良さそう
-            return SearchUsers(totalCount: 0, items: [])
+            throw .invalidResponse
         }
     }
 }
