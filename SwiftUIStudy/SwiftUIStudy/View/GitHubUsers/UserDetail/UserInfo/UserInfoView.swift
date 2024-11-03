@@ -14,28 +14,34 @@ struct UserInfoView: View {
             if let userInfo = self.state.userInfo {
                 // userInfoが存在する場合のレイアウト
                 VStack(alignment: .leading, spacing: 16) {
-                    AsyncImage(url: URL(string: userInfo.avatarUrl)) { image in
-                        image.resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .clipShape(Circle())
-                    } placeholder: {
-                        ProgressView()
+                    // TODO: なぜか中央寄せにならない
+                    HStack(alignment: .center) {
+                        AsyncImage(url: URL(string: userInfo.avatarUrl)) { image in
+                            image.resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .clipShape(Circle())
+                        } placeholder: {
+                            ProgressView()
+                        }
                     }
-
-                    Text("Username: \(userInfo.login)")
-                        .font(.headline)
-
-                    if let name = userInfo.name {
-                        Text("Name: \(name)")
+                    .padding()
+                    HStack {
+                        Text("Username: \(userInfo.login)")
+                            .font(.headline)
+                        if let name = userInfo.name {
+                            Text("Name: \(name)")
+                        }
                     }
-
-                    if let followers = userInfo.followers {
-                        Text("Followers: \(followers)")
-                    }
-
-                    if let following = userInfo.following {
-                        Text("Following: \(following)")
+                    HStack {
+                        Image(systemName: "person.2")
+                        if let followers = userInfo.followers {
+                            Text(" \(followers)")
+                        }
+                        Image(systemName: "person")
+                        if let following = userInfo.following {
+                            Text(" \(following)")
+                        }
                     }
                 }
                 .padding()
