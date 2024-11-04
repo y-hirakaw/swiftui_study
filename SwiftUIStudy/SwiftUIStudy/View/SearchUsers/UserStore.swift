@@ -1,9 +1,13 @@
 import Combine
 import Dependencies
 
+//protocol UserStoreProtocol: Sendable {
+//    func searchUsers(query: String) async
+//}
+
 @MainActor
-final class UserStore: ObservableObject {
-    static let shared: UserStore = .init()
+class UserStore: ObservableObject {
+    static var shared: UserStore = .init()
 
     @Dependency(\.searchUsersRepository) private var searchUsersRepository
 
@@ -11,17 +15,25 @@ final class UserStore: ObservableObject {
     @Published var errorMessage: String?
 
     func searchUsers(query: String) async {
-        self.errorMessage = nil
         do {
             self.users = try await self.searchUsersRepository.fetchGitHubUsers(query)
         } catch {
-            self.users = nil
-            self.errorMessage = error.errorDescription
+            await MainActor.run {
+                self.users = nil
+                self.errorMessage = error.errorDescription
+            }
         }
     }
 }
 
-struct User: Identifiable {
-    let id: Int
-    let name: String
-}
+// TODO: MainActor関連のエラーを解消できていない
+//private enum UserStoreKey: DependencyKey {
+//    static var liveValue: any UserStoreProtocol = UserStore.shared
+//}
+//
+//extension DependencyValues {
+//    var userStore: any UserStoreProtocol {
+//        get { self[UserStoreKey.self] }
+//        set { self[UserStoreKey.self] = newValue }
+//    }
+//}

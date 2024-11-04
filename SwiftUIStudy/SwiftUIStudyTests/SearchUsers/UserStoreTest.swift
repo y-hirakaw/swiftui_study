@@ -20,13 +20,7 @@ struct UserStoreTest {
     let store: UserStore
 
     init () async throws {
-        let mockSearchUsers = SearchUsers(
-            totalCount: 2,
-            items: [
-                SearchUsers.User(userName: "testName1", avatarUrl: "https://avatar_url1"),
-                SearchUsers.User(userName: "testName2", avatarUrl: "https://avatar_url2")
-            ]
-        )
+        let mockSearchUsers = SearchUsers.createMock()
         self.store = withDependencies {
             $0.searchUsersRepository = MockSearchUsersRepository(mockSearchUsers: mockSearchUsers)
         } operation: {

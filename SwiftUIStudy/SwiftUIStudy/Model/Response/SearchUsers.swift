@@ -11,10 +11,12 @@ struct SearchUsers: Decodable {
     }
     
     struct User: Decodable {
+        let id: Int
         let userName: String
         let avatarUrl: String
 
         enum CodingKeys: String, CodingKey {
+            case id
             case userName = "login"
             case avatarUrl = "avatar_url"
         }
