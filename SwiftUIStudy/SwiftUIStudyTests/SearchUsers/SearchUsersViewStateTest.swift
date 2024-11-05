@@ -1,14 +1,14 @@
 import Testing
-import Dependencies
+import Combine
 
 @testable import SwiftUIStudy
 
 @MainActor
 class MockUserStore: UserStore {
-    private(set) var setQuery: String?
+    @Published var isCalledSearchUsers: Bool = false
 
     override func searchUsers(query: String) async {
-        self.setQuery = query
+        self.isCalledSearchUsers = true
         if query == "test" {
             self.users = SearchUsers.createMock()
         } else {
@@ -23,9 +23,11 @@ class MockUserStore: UserStore {
 @MainActor
 struct SearchUsersViewStateTest {
     let state: SearchUsersViewState
+    let mockStore: MockUserStore
 
     init() {
-        self.state = SearchUsersViewState(store: MockUserStore())
+        self.mockStore = MockUserStore()
+        self.state = SearchUsersViewState(store: self.mockStore)
     }
 
     @Test func search関数を呼び出し成功したらusersに値が格納されること() async {
@@ -44,6 +46,22 @@ struct SearchUsersViewStateTest {
 
         #expect(state.users == nil)
         #expect(state.errorMessage == "無効なレスポンスを受信しました")
+    }
+
+    @Test func searchTextが変わった時にsearch関数が呼び出されること() async {
+        var cancellables = Set<AnyCancellable>()
+        await confirmation() { confirmation in
+            self.mockStore.$isCalledSearchUsers
+                .filter { $0 == true }
+                .sink { _ in
+                    confirmation()
+                }
+                .store(in: &cancellables)
+            self.state.searchText = "test"
+            // 0.5秒待つ、もっといい方法は無いか
+            try? await Task.sleep(nanoseconds: 500_000_000)
+        }
+
     }
 
 }
