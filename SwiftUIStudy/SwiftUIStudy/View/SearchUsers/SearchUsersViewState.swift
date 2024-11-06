@@ -3,7 +3,7 @@ import Combine
 import Dependencies
 
 @MainActor
-final class SearchUsersViewState: ObservableObject {
+class SearchUsersViewState: ObservableObject {
 //    private let store: UserStoreProtocol = .shared
 //    @Dependency(\.userStore) private var userStore
     private let store: UserStore

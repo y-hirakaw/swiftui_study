@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		669FA7F32CD66A23006A5150 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 669FA7F22CD66A23006A5150 /* Dependencies */; };
+		66D42C282CDAF89D00B375F3 /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 66D42C272CDAF89D00B375F3 /* ViewInspector */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66D42C282CDAF89D00B375F3 /* ViewInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +151,7 @@
 			);
 			name = SwiftUIStudyTests;
 			packageProductDependencies = (
+				66D42C272CDAF89D00B375F3 /* ViewInspector */,
 			);
 			productName = SwiftUIStudyTests;
 			productReference = 667776442CD3D04500F8B560 /* SwiftUIStudyTests.xctest */;
@@ -211,6 +214,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				667776612CD3D0DE00F8B560 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				66D42C262CDAF88600B375F3 /* XCRemoteSwiftPackageReference "ViewInspector" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 667776352CD3D04300F8B560 /* Products */;
@@ -589,6 +593,14 @@
 				minimumVersion = 1.4.1;
 			};
 		};
+		66D42C262CDAF88600B375F3 /* XCRemoteSwiftPackageReference "ViewInspector" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nalexn/ViewInspector";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -596,6 +608,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 667776612CD3D0DE00F8B560 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
 			productName = Dependencies;
+		};
+		66D42C272CDAF89D00B375F3 /* ViewInspector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 66D42C262CDAF88600B375F3 /* XCRemoteSwiftPackageReference "ViewInspector" */;
+			productName = ViewInspector;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -3,8 +3,8 @@ import SwiftUI
 struct SearchUsersView: View {
     @StateObject private var state: SearchUsersViewState
 
-    init() {
-        self._state = .init(wrappedValue: .init())
+    init(state: SearchUsersViewState = SearchUsersViewState()) {
+        self._state = .init(wrappedValue: state)
     }
 
     var body: some View {
