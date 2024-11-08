@@ -12,18 +12,21 @@ struct RepoLanguageView: View {
     }
 
     var body: some View {
-        HStack {
-            // TODO: この作りにしてしまうと、一つしか存在しないStoreのLanguagesが表示されるので、全てのitemが同じ値になってしまうデータの持ち方を変える必要ある
-            if let languages = self.state.languages {
-                ForEach(languages.languages, id: \.self) { item in
-                    Text(item)
-                }
-            } else {
-                VStack {
+        ScrollView(.horizontal, showsIndicators: false) { // 横スクロール可能にする
+            HStack {
+                if let languages = self.state.languages {
+                    ForEach(languages.languages, id: \.self) { item in
+                        Text(item)
+                            .padding(.horizontal, 4) // 言語間のスペースを少し追加
+                            .background(Color.gray.opacity(0.1)) // 見やすいように背景色を追加
+                    }
+                } else {
                     ProgressView("Loading...")
                 }
             }
+            .padding(4)
         }
+        .frame(height: 30) // 高さを固定することで、無駄なスペースを避ける
         .task {
             Task {
                 await self.state.onAppear(self.userName, self.repositoryName)

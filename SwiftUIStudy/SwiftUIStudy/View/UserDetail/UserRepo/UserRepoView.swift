@@ -14,16 +14,25 @@ struct UserRepoView: View {
             if let repositories = self.state.repositories {
                 List {
                     ForEach(repositories, id: \.name) { item in
-                        Button(action: {
+                        VStack {
+                            HStack {
+                                Text(item.name)
+                                Spacer()
+                            }
+                            HStack {
+                                RepoLanguageView(self.user.userName, item.name)
+                                Spacer()
+                            }
+                        }
+                        .contentShape(Rectangle()) // タップ可能な領域を拡張
+                        .onTapGesture {
                             if let url = URL(string: item.url) {
                                 UIApplication.shared.open(url)
                             }
-                        }) {
-                            Text(item.name)
-//                            RepoLanguageView(self.user.userName, item.name)
                         }
                     }
                 }
+                .listStyle(.grouped)
             } else {
                 VStack {
                     ProgressView("Loading...")
