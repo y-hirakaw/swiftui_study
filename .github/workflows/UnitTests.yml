@@ -16,5 +16,5 @@ jobs:
           xcode-version: '16.1'
 
       - name: UnitTests
-        run: xcodebuild test -project SwiftUIStudy/SwiftUIStudy.xcodeproj -scheme SwiftUIStudy -sdk iphonesimulator -destination platform='iOS Simulator,name=iPhone 16,OS=18.1'
+        run: xcodebuild test -project SwiftUIStudy/SwiftUIStudy.xcodeproj -scheme SwiftUIStudy -sdk iphonesimulator -destination platform='iOS Simulator,name=iPhone 16,OS=18.1' -skipPackagePluginValidation
 
