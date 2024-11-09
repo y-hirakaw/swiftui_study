@@ -72,3 +72,6 @@ GitHub APIを使ったユーザ検索ができるアプリです。
 
 ![SVVSのフロー図](/ReadmeImage/svvs.png "svvsフロー")
 ![SVVS例](/ReadmeImage/svvs_example.png "svvs例")
+
+※SVVSはChatworkさんが発表したアーキテクチャです。こちらの情報を元に記載させて頂いてます。
+https://fortee.jp/iosdc-japan-2023/proposal/edcec751-4f7f-46aa-9c17-92249a1a1771
