@@ -2,9 +2,7 @@ import Combine
 import Dependencies
 
 @MainActor
-final class RepoLanguageStore: ObservableObject {
-    //    static let shared: RepoLanguageStore = .init()
-
+final class RepoLanguageInstanceStore: ObservableObject {
     @Dependency(\.languageRepository) private var languageRepository
 
     @Published var languages: Languages?

@@ -3,15 +3,14 @@ import Foundation
 
 @MainActor
 final class RepoLanguageViewState: ObservableObject {
-    //    private let store: RepoLanguageStore = .shared
     // Viewごとに言語情報を持ちたいためsharedにはしない
-    private let store: RepoLanguageStore
+    private let store: RepoLanguageInstanceStore
 
     @Published private(set) var languages: Languages?
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(store: RepoLanguageStore = RepoLanguageStore()) {
+    init(store: RepoLanguageInstanceStore = RepoLanguageInstanceStore()) {
         self.store = store
         self.store.$languages
             .assign(to: \.languages, on: self)
