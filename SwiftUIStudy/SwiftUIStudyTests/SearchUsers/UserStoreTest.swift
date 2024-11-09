@@ -21,6 +21,16 @@ struct MockSearchUsersRepository: SearchUsersRepositoryProtocol {
 struct UserStoreTest {
     let store: UserStore
 
+    init() async throws {
+        let mockSearchUsers = SearchUsers.createMock()
+        self.store = withDependencies {
+            $0.searchUsersRepository = MockSearchUsersRepository(
+                mockSearchUsers: mockSearchUsers)
+        } operation: {
+            UserStore()
+        }
+    }
+
     struct Parameter {
         let query: String
         let totalCount: Int?
@@ -33,16 +43,6 @@ struct UserStoreTest {
             self.userName = userName
             self.avatarUrl = avatarUrl
             self.errorMessage = errorMessage
-        }
-    }
-
-    init() async throws {
-        let mockSearchUsers = SearchUsers.createMock()
-        self.store = withDependencies {
-            $0.searchUsersRepository = MockSearchUsersRepository(
-                mockSearchUsers: mockSearchUsers)
-        } operation: {
-            UserStore()
         }
     }
 

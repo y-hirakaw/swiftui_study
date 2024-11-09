@@ -59,8 +59,8 @@ struct SearchUsersViewStateTest {
                 }
                 .store(in: &cancellables)
             self.state.searchText = "test"
-            // 0.5秒待つ、もっといい方法は無いか
-            try? await Task.sleep(nanoseconds: 500_000_000)
+            // 0.6秒待つ、もっといい方法は無いか
+            try? await Task.sleep(nanoseconds: 600_000_000)
         }
 
     }
