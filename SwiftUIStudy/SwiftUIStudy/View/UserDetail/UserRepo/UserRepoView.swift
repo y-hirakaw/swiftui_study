@@ -17,6 +17,7 @@ struct UserRepoView: View {
                         VStack {
                             HStack {
                                 Text(item.name)
+                                    .bold()
                                 Spacer()
                             }
                             HStack {

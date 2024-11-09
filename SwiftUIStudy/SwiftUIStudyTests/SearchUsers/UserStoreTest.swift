@@ -21,6 +21,21 @@ struct MockSearchUsersRepository: SearchUsersRepositoryProtocol {
 struct UserStoreTest {
     let store: UserStore
 
+    struct Parameter {
+        let query: String
+        let totalCount: Int?
+        let userName: String?
+        let avatarUrl: String?
+        let errorMessage: String?
+        init(_ query: String, _ totalCount: Int?, _ userName: String?, _ avatarUrl: String?, _ errorMessage: String?) {
+            self.query = query
+            self.totalCount = totalCount
+            self.userName = userName
+            self.avatarUrl = avatarUrl
+            self.errorMessage = errorMessage
+        }
+    }
+
     init() async throws {
         let mockSearchUsers = SearchUsers.createMock()
         self.store = withDependencies {
@@ -31,20 +46,20 @@ struct UserStoreTest {
         }
     }
 
-    @Test func searchUsersによってusersに値が格納されること() async throws {
-        await store.searchUsers(query: "test")
+    @Test(
+        arguments:
+            [
+                Parameter("test", 2, "testName1", "https://avatar_url2", nil),
+                Parameter("error", nil, nil, nil, "無効なレスポンスを受信しました")
+            ]
+    ) func searchUsersで成功失敗時に値が正しいこと(
+        _ param: Parameter
+    ) async throws {
+        await store.searchUsers(query: param.query)
 
-        #expect(store.users?.totalCount == 2)
-        #expect(store.users?.items[0].userName == "testName1")
-        #expect(store.users?.items[1].avatarUrl == "https://avatar_url2")
-        #expect(store.errorMessage == nil)
+        #expect(store.users?.totalCount == param.totalCount)
+        #expect(store.users?.items[0].userName == param.userName)
+        #expect(store.users?.items[1].avatarUrl == param.avatarUrl)
+        #expect(store.errorMessage == param.errorMessage)
     }
-
-    @Test func searchUsersがエラーになった場合errorMessageが更新されること() async throws {
-        await store.searchUsers(query: "error")
-
-        #expect(store.users == nil)
-        #expect(store.errorMessage == "無効なレスポンスを受信しました")
-    }
-
 }
