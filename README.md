@@ -26,35 +26,49 @@ GitHub APIを使ったユーザ検索ができるアプリです。
 
 ### ユーザ検索画面
 
-* UserStore
-  * 検索したユーザ一覧データを保持し、詳細画面で選択されたユーザ情報を渡す
-* SearchUsersViewState
-  * 検索窓の値を持つ
-  * UserStoreで検索したユーザデータを購読し、View表示用データに修正して自身のプロパティに反映する
 * SearchUsersView
   * 検索窓
-    * 文字入力するとViewStateを呼び出す
+    * 文字入力するとViewStateが変更を検知し、Storeに検索を依頼する
   * 検索結果を表示する
-    * タップされた場合、UserStoreでユーザ詳細を取得してからUserDetailViewに遷移
+    * ViewStateで購読しているusersが更新されると表示される
+  * 検索結果をタップされた場合、Userオブジェクトをユーザ詳細画面に渡して遷移する
+* UserRowView
+  * ユーザ一覧のListItemのコンポーネント
+* SearchUsersViewState
+  * UserStoreのユーザ一覧データ、エラーメッセージを購読する
+  * 検索窓の値を持つ
+* UserStore
+  * 検索したユーザ一覧データを保持する
 
 ### ユーザ詳細画面
 
-* UserStore
-  * UserStore内にある選択されたユーザの詳細情報を参照
-* RepositoryStore
-  * 表示するユーザのリポジトリ一覧を管理
-* UserDetailViewState
-  * 表示するデータをUserStoreから購読し、View表示用に修正して自身のプロパティに反映する
-  * 特にUIに関係して保持する情報はない
 * UserDetailView
-  * ユーザ情報Viewとリポジトリ一覧を表示する
+  * ユーザ詳細画面のView、UserInfoView（ユーザ情報）とUserRepoView（リポジトリ一覧）の表示だけを担当する
 
-### ユーザ詳細のユーザ情報View
+#### ユーザ情報コンポーネント
 
 * UserInfoView
-  * ユーザ情報を表示する
+  * ユーザ名、フォロー、フォロワー数を表示する
+* UserInfoViewState
+  * View表示時に、Storeにユーザ情報取得を依頼する
+  * Storeのユーザ情報を購読する
+* UserInfoStore
+  * ユーザ情報を取得し保持する
 
-### ユーザ詳細のリポジトリ一覧View
+#### ユーザリポジトリ一覧コンポーネント
 
-* UserRepositoryListView
-  * ユーザリポジト一覧を表示する
+* UserRepoView
+  * リポジトリ一覧を表示する
+* UserRepoViewState
+  * View表示に、Storeにリポジトリ一覧取得を依頼する
+  * Storeのリポジトリ一覧を購読する
+* UserRepoStore
+  * リポジトリ一覧を取得し保持する
+
+* RepoLanguageView
+  * リポジトリの言語一覧を表示する
+* RepoLanguageViewState
+  * View表示に、Storeに言語一覧取得を依頼する
+  * Storeの言語一覧を購読する
+* RepoLanguageLocalStore
+  * 言語一覧を取得し、保持する

@@ -2,7 +2,7 @@ import Combine
 import Dependencies
 
 @MainActor
-final class RepoLanguageInstanceStore: ObservableObject {
+final class RepoLanguageLocalStore: ObservableObject {
     @Dependency(\.languageRepository) private var languageRepository
 
     @Published var languages: Languages?

@@ -14,7 +14,6 @@ struct UserInfoView: View {
             if let userInfo = self.state.userInfo {
                 // userInfoが存在する場合のレイアウト
                 VStack(alignment: .leading, spacing: 16) {
-                    // TODO: なぜか中央寄せにならない
                     HStack(alignment: .center) {
                         AsyncImage(url: URL(string: userInfo.avatarUrl)) {
                             image in
