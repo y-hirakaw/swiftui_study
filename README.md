@@ -19,11 +19,6 @@ GitHub APIを使ったユーザ検索ができるアプリです。
 
 ## 詳細
 
-### 共通Store
-
-* 検索したユーザの一覧データ、および詳細情報を持つ
-* SearchUsersViewとUserDetailViewの両方からアクセス可能にする
-
 ### ユーザ検索画面
 
 * SearchUsersView
@@ -72,3 +67,8 @@ GitHub APIを使ったユーザ検索ができるアプリです。
   * Storeの言語一覧を購読する
 * RepoLanguageLocalStore
   * 言語一覧を取得し、保持する
+
+## SVVS説明
+
+![SVVSのフロー図](/ReadmeImage/svvs.png "svvsフロー")
+![SVVS例](/ReadmeImage/svvs_example.png "svvs例")
