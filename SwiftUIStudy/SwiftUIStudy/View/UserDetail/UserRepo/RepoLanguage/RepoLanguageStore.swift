@@ -3,7 +3,7 @@ import Dependencies
 
 @MainActor
 final class RepoLanguageStore: ObservableObject {
-//    static let shared: RepoLanguageStore = .init()
+    //    static let shared: RepoLanguageStore = .init()
 
     @Dependency(\.languageRepository) private var languageRepository
 

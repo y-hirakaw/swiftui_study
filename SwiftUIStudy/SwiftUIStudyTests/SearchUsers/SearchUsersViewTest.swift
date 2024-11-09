@@ -1,5 +1,5 @@
-import Testing
 import Combine
+import Testing
 import ViewInspector
 
 @testable import SwiftUIStudy
@@ -25,7 +25,7 @@ struct SearchUsersViewTest {
 
     @Test func 検索文字列が変わった時stateのseachが呼ばれる() async throws {
         var cancellables = Set<AnyCancellable>()
-        await confirmation() { confirmation in
+        await confirmation { confirmation in
             self.mockState.$isCalledSearch
                 .filter { $0 == true }
                 .sink { _ in

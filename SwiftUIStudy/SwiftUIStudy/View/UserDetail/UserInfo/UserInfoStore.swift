@@ -11,7 +11,8 @@ final class UserInfoStore: ObservableObject {
 
     func loadUserInfo(_ userName: String) async {
         do {
-            self.userInfo = try await self.userDetailRepository.requestGitHubUserDetail(userName)
+            self.userInfo = try await self.userDetailRepository
+                .requestGitHubUserDetail(userName)
         } catch {
             // TODO: エラーハンドリング
             print("\(#function) - \(error)")

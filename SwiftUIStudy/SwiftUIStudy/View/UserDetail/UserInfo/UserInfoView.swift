@@ -16,7 +16,8 @@ struct UserInfoView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     // TODO: なぜか中央寄せにならない
                     HStack(alignment: .center) {
-                        AsyncImage(url: URL(string: userInfo.avatarUrl)) { image in
+                        AsyncImage(url: URL(string: userInfo.avatarUrl)) {
+                            image in
                             image.resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)

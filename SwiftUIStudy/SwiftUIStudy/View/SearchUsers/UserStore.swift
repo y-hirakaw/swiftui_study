@@ -1,9 +1,9 @@
 import Combine
 import Dependencies
 
-//protocol UserStoreProtocol: Sendable {
+// protocol UserStoreProtocol: Sendable {
 //    func searchUsers(query: String) async
-//}
+// }
 
 @MainActor
 class UserStore: ObservableObject {
@@ -16,7 +16,8 @@ class UserStore: ObservableObject {
 
     func searchUsers(query: String) async {
         do {
-            self.users = try await self.searchUsersRepository.fetchGitHubUsers(query)
+            self.users = try await self.searchUsersRepository.fetchGitHubUsers(
+                query)
         } catch {
             await MainActor.run {
                 self.users = nil
@@ -27,13 +28,13 @@ class UserStore: ObservableObject {
 }
 
 // TODO: MainActor関連のエラーを解消できていない
-//private enum UserStoreKey: DependencyKey {
+// private enum UserStoreKey: DependencyKey {
 //    static var liveValue: any UserStoreProtocol = UserStore.shared
-//}
+// }
 //
-//extension DependencyValues {
+// extension DependencyValues {
 //    var userStore: any UserStoreProtocol {
 //        get { self[UserStoreKey.self] }
 //        set { self[UserStoreKey.self] = newValue }
 //    }
-//}
+// }

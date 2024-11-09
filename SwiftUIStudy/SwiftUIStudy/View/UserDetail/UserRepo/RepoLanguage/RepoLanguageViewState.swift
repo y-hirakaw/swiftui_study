@@ -1,9 +1,9 @@
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class RepoLanguageViewState: ObservableObject {
-//    private let store: RepoLanguageStore = .shared
+    //    private let store: RepoLanguageStore = .shared
     // Viewごとに言語情報を持ちたいためsharedにはしない
     private let store: RepoLanguageStore
 

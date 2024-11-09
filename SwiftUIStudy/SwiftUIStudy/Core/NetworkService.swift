@@ -5,14 +5,17 @@ final class NetworkService: Sendable {
 
     // TODO: 今回GETしかしないのでmethod隠蔽しても良さそう
     /// リクエスト
-    func request<T>(url: URL, method: String, headers: [String: String]) async throws -> T where T: Decodable {
+    func request<T>(url: URL, method: String, headers: [String: String])
+        async throws -> T where T: Decodable
+    {
         var request = URLRequest(url: url)
         request.httpMethod = method
         headers.forEach {
             request.addValue($0.value, forHTTPHeaderField: $0.key)
         }
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await URLSession.shared.data(
+                for: request)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.invalidResponse

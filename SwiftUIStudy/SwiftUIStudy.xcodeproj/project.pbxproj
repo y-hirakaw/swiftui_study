@@ -121,6 +121,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6600AEA62CDEE7D8000CB524 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				667776362CD3D04300F8B560 /* SwiftUIStudy */,
@@ -215,6 +216,7 @@
 			packageReferences = (
 				667776612CD3D0DE00F8B560 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				66D42C262CDAF88600B375F3 /* XCRemoteSwiftPackageReference "ViewInspector" */,
+				6600AEA42CDEE79C000CB524 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 667776352CD3D04300F8B560 /* Products */;
@@ -277,6 +279,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6600AEA62CDEE7D8000CB524 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 6600AEA52CDEE7D8000CB524 /* SwiftLintBuildToolPlugin */;
+		};
 		667776462CD3D04500F8B560 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 667776332CD3D04300F8B560 /* SwiftUIStudy */;
@@ -585,6 +591,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6600AEA42CDEE79C000CB524 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.57.0;
+			};
+		};
 		667776612CD3D0DE00F8B560 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
@@ -604,6 +618,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6600AEA52CDEE7D8000CB524 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6600AEA42CDEE79C000CB524 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
 		669FA7F22CD66A23006A5150 /* Dependencies */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 667776612CD3D0DE00F8B560 /* XCRemoteSwiftPackageReference "swift-dependencies" */;

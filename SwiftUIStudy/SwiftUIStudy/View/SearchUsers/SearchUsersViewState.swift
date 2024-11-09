@@ -1,11 +1,11 @@
-import Foundation
 import Combine
 import Dependencies
+import Foundation
 
 @MainActor
 class SearchUsersViewState: ObservableObject {
-//    private let store: UserStoreProtocol = .shared
-//    @Dependency(\.userStore) private var userStore
+    //    private let store: UserStoreProtocol = .shared
+    //    @Dependency(\.userStore) private var userStore
     private let store: UserStore
 
     /// UserStoreのユーザ一覧をViewBindingする
@@ -44,7 +44,7 @@ class SearchUsersViewState: ObservableObject {
     func setupViewBindings() {
         // 検索バーの検索文字
         self.debouncedNonEmpty($searchText)
-            .sink { [weak self] text in
+            .sink { [weak self] _ in
                 Task {
                     await self?.search()
                 }
@@ -59,11 +59,13 @@ class SearchUsersViewState: ObservableObject {
     }
 
     /// `searchText` にデバウンス、フィルタ、重複除去を適用したPublisherを返す関数
-    private func debouncedNonEmpty(_ publisher: Published<String>.Publisher) -> AnyPublisher<String, Never> {
+    private func debouncedNonEmpty(_ publisher: Published<String>.Publisher)
+        -> AnyPublisher<String, Never>
+    {
         publisher
-            .debounce(for: .seconds(0.5), scheduler: RunLoop.main) // デバウンス
-            .filter { !$0.isEmpty }                                // 空文字をフィルタ
-            .removeDuplicates()                                    // 重複削除
+            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)  // デバウンス
+            .filter { !$0.isEmpty }  // 空文字をフィルタ
+            .removeDuplicates()  // 重複削除
             .eraseToAnyPublisher()
     }
 }

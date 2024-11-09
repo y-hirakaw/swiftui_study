@@ -24,7 +24,7 @@ struct UserRepoView: View {
                                 Spacer()
                             }
                         }
-                        .contentShape(Rectangle()) // タップ可能な領域を拡張
+                        .contentShape(Rectangle())  // タップ可能な領域を拡張
                         .onTapGesture {
                             if let url = URL(string: item.url) {
                                 UIApplication.shared.open(url)

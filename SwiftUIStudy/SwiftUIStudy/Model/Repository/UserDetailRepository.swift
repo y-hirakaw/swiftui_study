@@ -1,5 +1,5 @@
-import Foundation
 import Dependencies
+import Foundation
 
 protocol UserDetailRepositoryProtocol: Sendable {
     func requestGitHubUserDetail(_ userName: String) async throws -> UserDetail
@@ -8,20 +8,23 @@ protocol UserDetailRepositoryProtocol: Sendable {
 struct UserDetailRepository: UserDetailRepositoryProtocol {
 
     private let networkService: NetworkService
-    
+
     init(networkService: NetworkService = NetworkService()) {
         self.networkService = networkService
     }
-    
-    func requestGitHubUserDetail(_ userName: String) async throws -> UserDetail {
+
+    func requestGitHubUserDetail(_ userName: String) async throws -> UserDetail
+    {
         let url = GitHubAPI.userDetailURL(userName: userName)
         let headers = GitHubAPI.defaultHeaders()
-        return try await networkService.request(url: url, method: "GET", headers: headers)
+        return try await networkService.request(
+            url: url, method: "GET", headers: headers)
     }
 }
 
 private enum UserDetailRepositoryKey: DependencyKey {
-    static let liveValue: any UserDetailRepositoryProtocol = UserDetailRepository()
+    static let liveValue: any UserDetailRepositoryProtocol =
+        UserDetailRepository()
 }
 
 extension DependencyValues {

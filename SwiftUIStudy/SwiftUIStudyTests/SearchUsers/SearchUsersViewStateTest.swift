@@ -1,5 +1,5 @@
-import Testing
 import Combine
+import Testing
 
 @testable import SwiftUIStudy
 
@@ -14,7 +14,8 @@ class MockUserStore: UserStore {
         } else {
             await MainActor.run {
                 self.users = nil
-                self.errorMessage = NetworkError.invalidResponse.errorDescription
+                self.errorMessage =
+                    NetworkError.invalidResponse.errorDescription
             }
         }
     }
@@ -50,7 +51,7 @@ struct SearchUsersViewStateTest {
 
     @Test func searchTextが変わった時にsearch関数が呼び出されること() async {
         var cancellables = Set<AnyCancellable>()
-        await confirmation() { confirmation in
+        await confirmation { confirmation in
             self.mockStore.$isCalledSearchUsers
                 .filter { $0 == true }
                 .sink { _ in

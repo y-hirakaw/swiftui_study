@@ -1,12 +1,14 @@
-import Testing
 import Dependencies
+import Testing
 
 @testable import SwiftUIStudy
 
 struct MockSearchUsersRepository: SearchUsersRepositoryProtocol {
     var mockSearchUsers: SearchUsers
 
-    func fetchGitHubUsers(_ searchText: String) async throws(NetworkError) -> SearchUsers {
+    func fetchGitHubUsers(_ searchText: String) async throws(NetworkError)
+        -> SearchUsers
+    {
         if searchText == "test" {
             return self.mockSearchUsers
         } else {
@@ -19,10 +21,11 @@ struct MockSearchUsersRepository: SearchUsersRepositoryProtocol {
 struct UserStoreTest {
     let store: UserStore
 
-    init () async throws {
+    init() async throws {
         let mockSearchUsers = SearchUsers.createMock()
         self.store = withDependencies {
-            $0.searchUsersRepository = MockSearchUsersRepository(mockSearchUsers: mockSearchUsers)
+            $0.searchUsersRepository = MockSearchUsersRepository(
+                mockSearchUsers: mockSearchUsers)
         } operation: {
             UserStore()
         }

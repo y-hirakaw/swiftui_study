@@ -5,7 +5,7 @@ enum NetworkError: LocalizedError {
     case httpError(statusCode: Int)
     case decodingError(Error)
     case networkError(Error)
-    
+
     var errorDescription: String? {
         switch self {
         case .invalidResponse:

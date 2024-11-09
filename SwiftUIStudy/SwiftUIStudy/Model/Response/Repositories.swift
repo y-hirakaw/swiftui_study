@@ -7,7 +7,7 @@ struct Repositories: Decodable {
         let languagesUrl: String
         let starCount: Int
         let url: String
-        
+
         enum CodingKeys: String, CodingKey {
             case name = "name"
             case owner = "owner"
@@ -15,16 +15,16 @@ struct Repositories: Decodable {
             case starCount = "stargazers_count"
             case url = "html_url"
         }
-        
-        struct Owner: Decodable  {
+
+        struct Owner: Decodable {
             let login: String
         }
     }
-    
+
     var repositoriesCount: Int {
         return self.repositories.count
     }
-    
+
     func getRepository(_ index: Int) -> Repository? {
         guard index >= 0 && index < self.repositories.count else {
             return nil
