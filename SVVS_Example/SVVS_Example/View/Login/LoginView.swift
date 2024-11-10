@@ -8,28 +8,44 @@ struct LoginView: View {
     }
 
     var body: some View {
-        VStack {
-            HStack {
-                Text("ID:")
-                    .frame(width: 100)
-                TextField("IDを入力してください", text: self.$state.userId)
-            }
-            HStack {
-                Text("Password:")
-                    .frame(width: 100)
-                TextField("パスワードを入力してください", text: self.$state.password)
-            }
-            Spacer()
-                .frame(height: 40)
-            Button(action: {
-                Task {
-                    await self.state.didTapLoginButton()
+        NavigationStack {
+            VStack {
+                HStack {
+                    Text("ID:")
+                        .frame(width: 100)
+                    TextField("IDを入力してください", text: self.$state.userId)
                 }
-            }) {
-                Text("ログイン")
+                HStack {
+                    Text("Password:")
+                        .frame(width: 100)
+                    TextField("パスワードを入力してください", text: self.$state.password)
+                }
+                Spacer()
+                    .frame(height: 40)
+                if self.state.loginState == .notLoggedIn {
+                    Button(action: {
+                        Task {
+                            await self.state.didTapLoginButton()
+                        }
+                    }, label: {
+                        Text("ログイン")
+                    })
+                } else if self.state.loginState == .loggingIn {
+                    ProgressView("ログイン中...")
+                } else if self.state.loginState == .loggedIn {
+                    EmptyView()
+                }
+            }
+            .padding()
+            .navigationDestination(isPresented: self.$state.shouldNavigateHome) {
+                HomeView()
+            }
+            .task {
+                Task {
+                    await self.state.didAppear()
+                }
             }
         }
-        .padding()
     }
 }
 

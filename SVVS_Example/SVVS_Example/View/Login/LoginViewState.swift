@@ -4,36 +4,50 @@ import Foundation
 @MainActor
 class LoginViewState: ObservableObject {
     private let store: UserStore
+    /// ログインステータス
+    @Published var loginState: LoginState = .notLoggedIn
+    /// 入力されたユーザID
     @Published var userId: String = ""
+    /// 入力されたパスワード
     @Published var password: String = ""
-    @Published var errorMessage: String?
-    /// アラートを表示するか
-    @Published var isAlertPresented: Bool = false
+    /// ホーム画面へ遷移する場合true
+    @Published var shouldNavigateHome: Bool = false
     private var cancellables = Set<AnyCancellable>()
 
     init(store: UserStore = .shared) {
         self.store = store
         self.setupStoreBindings()
-        self.setupViewBindings()
     }
 
+    /// Storeプロパティ購読を設定する
     func setupStoreBindings() {
-        // UserStoreのerrorMessageを購読
+        self.store.$user
+            .sink { [weak self] user in
+                if user != nil {
+                    self?.loginState = .loggedIn
+                    self?.shouldNavigateHome = true
+                }
+            }
+            .store(in: &cancellables)
         self.store.$error
-            .sink { [weak self] error in
-                guard let self else { return }
-                self.errorMessage = error?.localizedDescription
-                self.isAlertPresented = error != nil
+            .sink { [weak self] _ in
+                // 実際はエラーハンドリングを行う
+                self?.loginState = .notLoggedIn
             }
             .store(in: &cancellables)
     }
 
-    func setupViewBindings() {
+    /// ログインボタン押下された
+    func didTapLoginButton() async {
+        Task { @MainActor in
+            self.loginState = .loggingIn
+        }
+        await self.store.login(self.userId, self.password)
     }
 
-    /// ログインボタン押下
-    func didTapLoginButton() async {
-        print("start \(#function)")
-        await self.store.login(self.userId, self.password)
+    /// 画面が表示された
+    func didAppear() async {
+        self.loginState = .notLoggedIn
+        self.shouldNavigateHome = false
     }
 }
