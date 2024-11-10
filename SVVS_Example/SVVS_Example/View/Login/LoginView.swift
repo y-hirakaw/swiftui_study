@@ -14,11 +14,13 @@ struct LoginView: View {
                     Text("ID:")
                         .frame(width: 100)
                     TextField("IDを入力してください", text: self.$state.userId)
+                        .keyboardType(.emailAddress)
                 }
                 HStack {
                     Text("Password:")
                         .frame(width: 100)
-                    TextField("パスワードを入力してください", text: self.$state.password)
+                    SecureField("パスワードを入力してください", text: self.$state.password)
+                        .keyboardType(.asciiCapable)
                 }
                 Spacer()
                     .frame(height: 40)
