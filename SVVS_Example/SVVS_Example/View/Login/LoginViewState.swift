@@ -3,7 +3,7 @@ import Foundation
 
 @MainActor
 class LoginViewState: ObservableObject {
-    private let store: UserStore
+    private let store: any UserStoreProtocol
     /// ログインステータス
     @Published var loginState: LoginState = .notLoggedIn
     /// 入力されたユーザID
@@ -14,14 +14,14 @@ class LoginViewState: ObservableObject {
     @Published var shouldNavigateHome: Bool = false
     private var cancellables = Set<AnyCancellable>()
 
-    init(store: UserStore = .shared) {
+    init(store: any UserStoreProtocol = UserStore.shared) {
         self.store = store
         self.setupStoreBindings()
     }
 
     /// Storeプロパティ購読を設定する
     func setupStoreBindings() {
-        self.store.$user
+        self.store.userPublisher
             .sink { [weak self] user in
                 if user != nil {
                     self?.loginState = .loggedIn
@@ -29,7 +29,7 @@ class LoginViewState: ObservableObject {
                 }
             }
             .store(in: &cancellables)
-        self.store.$error
+        self.store.errorPublisher
             .sink { [weak self] _ in
                 // 実際はエラーハンドリングを行う
                 self?.loginState = .notLoggedIn

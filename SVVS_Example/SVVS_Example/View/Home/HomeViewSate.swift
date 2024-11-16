@@ -3,19 +3,19 @@ import Foundation
 
 @MainActor
 class HomeViewState: ObservableObject {
-    private let store: UserStore
+    private let store: any UserStoreProtocol
     @Published var user: User?
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(store: UserStore = .shared) {
+    init(store: any UserStoreProtocol = UserStore.shared) {
         self.store = store
         self.setupStoreBindings()
     }
 
     /// Storeプロパティ購読を設定する
     func setupStoreBindings() {
-        self.store.$user
+        self.store.userPublisher
             .sink { [weak self] user in
                 self?.user = user
             }

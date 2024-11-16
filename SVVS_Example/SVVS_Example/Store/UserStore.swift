@@ -1,13 +1,23 @@
 import Combine
 
 @MainActor
-class UserStore: ObservableObject {
-    static var shared: UserStore = .init()
+protocol UserStoreProtocol: ObservableObject {
+    var userPublisher: Published<User?>.Publisher { get }
+    var errorPublisher: Published<Error?>.Publisher { get }
+    func login(_ userId: String, _ password: String) async
+}
+
+@MainActor
+class UserStore: ObservableObject, UserStoreProtocol {
+    static var shared = UserStore()
 
     let loginRepository: LoginRepositoryProtocol
 
     @Published var user: User?
     @Published var error: Error?
+    // プロトコルに準拠するためのPublisher
+    var userPublisher: Published<User?>.Publisher { $user }
+    var errorPublisher: Published<Error?>.Publisher { $error }
 
     init(loginRepository: LoginRepositoryProtocol = LoginRepository()) {
         self.loginRepository = loginRepository
