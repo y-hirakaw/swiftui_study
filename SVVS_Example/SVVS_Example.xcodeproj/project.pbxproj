@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		660BE6E12CE624E40009D17E /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 660BE6E02CE624E40009D17E /* ViewInspector */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		66DABBB52CE08EAF007114A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -63,7 +59,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				660BE6E12CE624E40009D17E /* ViewInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,7 +144,6 @@
 			);
 			name = SVVS_ExampleTests;
 			packageProductDependencies = (
-				660BE6E02CE624E40009D17E /* ViewInspector */,
 			);
 			productName = SVVS_ExampleTests;
 			productReference = 66DABBB42CE08EAF007114A0 /* SVVS_ExampleTests.xctest */;
@@ -212,7 +206,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				66DABBD12CE08F5B007114A0 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
-				660BE6DE2CE624D20009D17E /* XCRemoteSwiftPackageReference "ViewInspector" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 66DABBA52CE08EAD007114A0 /* Products */;
@@ -583,14 +576,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		660BE6DE2CE624D20009D17E /* XCRemoteSwiftPackageReference "ViewInspector" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nalexn/ViewInspector";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.10.0;
-			};
-		};
 		66DABBD12CE08F5B007114A0 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
@@ -602,11 +587,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		660BE6E02CE624E40009D17E /* ViewInspector */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 660BE6DE2CE624D20009D17E /* XCRemoteSwiftPackageReference "ViewInspector" */;
-			productName = ViewInspector;
-		};
 		66DABBD22CE08F7B007114A0 /* SwiftLintBuildToolPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 66DABBD12CE08F5B007114A0 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;

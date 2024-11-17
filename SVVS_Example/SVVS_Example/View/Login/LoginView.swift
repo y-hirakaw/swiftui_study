@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct LoginView: View {
-    @StateObject private var state: LoginViewState
+struct LoginView<State: LoginViewStateProtocol & ObservableObject>: View {
+    @StateObject private var state: State
 
-    init(state: LoginViewState = LoginViewState()) {
-        self._state = .init(wrappedValue: state)
+    init(state: State = LoginViewState()) {
+        self._state = StateObject(wrappedValue: state)
     }
 
     var body: some View {

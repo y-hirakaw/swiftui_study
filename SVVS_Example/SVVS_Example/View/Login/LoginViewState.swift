@@ -2,7 +2,18 @@ import Combine
 import Foundation
 
 @MainActor
-class LoginViewState: ObservableObject {
+protocol LoginViewStateProtocol: ObservableObject {
+    var loginState: LoginState { get set }
+    var userId: String { get set }
+    var password: String { get set }
+    var shouldNavigateHome: Bool { get set }
+
+    func didTapLoginButton() async
+    func didAppear() async
+}
+
+@MainActor
+class LoginViewState: LoginViewStateProtocol {
     private let store: any UserStoreProtocol
     /// ログインステータス
     @Published var loginState: LoginState = .notLoggedIn

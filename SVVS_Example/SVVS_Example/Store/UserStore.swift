@@ -19,8 +19,8 @@ class UserStore: ObservableObject, UserStoreProtocol {
     var userPublisher: Published<User?>.Publisher { $user }
     var errorPublisher: Published<Error?>.Publisher { $error }
 
-    init(loginRepository: LoginRepositoryProtocol = LoginRepository()) {
-        self.loginRepository = loginRepository
+    init(_ repository: LoginRepositoryProtocol = LoginRepository()) {
+        self.loginRepository = repository
     }
 
     func login(_ userId: String, _ password: String) async {

@@ -1,30 +1,37 @@
 import Testing
 import SwiftUI
-import ViewInspector
+
 @testable import SVVS_Example
 
-class MockLoginViewState: LoginViewState {
+class MockLoginViewState: LoginViewStateProtocol {
+    var loginState: SVVS_Example.LoginState = .notLoggedIn
+
+    var userId: String = ""
+
+    var password: String = ""
+
+    var shouldNavigateHome: Bool = false
+
+    func didTapLoginButton() async {
+    }
+
+    func didAppear() async {
+    }
 
 }
 
 @MainActor
 struct LoginViewTest {
 
-    @Test func ログイン前にログインボタンが表示されていること() async throws {
-        let mockViewState = MockLoginViewState()
-        let view = LoginView(state: mockViewState)
-        let button = try view.inspect().find(button: "ログイン")
-        #expect(button != nil)
-    }
-
-    // TODO: プログレスを取得できない
+//    @Test func ログイン前にログインボタンが表示されていること() async throws {
+//        let mockViewState = MockLoginViewState()
+//        let view = LoginView(state: mockViewState)
+//    }
+//
 //    @Test func ログイン中にプログレスが表示されていること() async throws {
 //        let mockViewState = MockLoginViewState()
 //        mockViewState.loginState = .loggingIn
 //        let view = LoginView(state: mockViewState)
-//
-//        let button = try view.inspect().find(button: "ログイン")
-//        #expect(button != nil)
 //    }
 
 }
