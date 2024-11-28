@@ -22,12 +22,24 @@ class MockUserStore: UserStoreProtocol {
 struct LoginViewStateTests {
 
     @Test func didTapLoginButtonが呼ばれたらloginが呼ばれる() async {
+        var cancellables: Set<AnyCancellable> = []
         let store = MockUserStore()
         let state = LoginViewState(store: store)
-        await state.didTapLoginButton()
+        await confirmation { confirmed in
+            await state.didTapLoginButton()
+            await withCheckedContinuation { continuation in
+                state.$loginState
+                    .sink { state in
+                        if state == .loggingIn {
+                            confirmed()
+                            continuation.resume()
+                        }
+                    }
+                    .store(in: &cancellables)
+            }
+        }
         #expect(store.isLoginCalled == true)
-        // TODO: Taskで変更している都合でテストできない
-//        #expect(state.loginState == .loggingIn)
+        #expect(state.loginState == .loggingIn)
     }
 
     @Test func didAppearが呼ばれたら値が更新される() async {
