@@ -10,9 +10,10 @@ protocol WeatherRepositoryProtocol: Sendable {
 
 struct WeatherRepository: WeatherRepositoryProtocol {
     func fetchWeather() async throws -> WeatherResponse {
-        try await Task.sleep(nanoseconds: 1_000_000_000) // Simulate 1-second delay
+        try await Task.sleep(nanoseconds: 1_000_000_000)  // Simulate 1-second delay
         if Bool.random() {
-            throw [NetworkError.serverError, DomainError.weatherUnavailable].randomElement()!
+            throw [NetworkError.serverError, DomainError.weatherUnavailable]
+                .randomElement()!
         }
         return WeatherResponse(weather: "晴れ")
     }

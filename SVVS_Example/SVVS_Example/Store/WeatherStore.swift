@@ -1,12 +1,14 @@
 import Combine
 import Foundation
 
+@MainActor
 protocol WeatherStoreProtocol: AnyObject {
     var weatherResponsePublisher: Published<WeatherResponse?>.Publisher { get }
     var errorPublisher: Published<Error?>.Publisher { get }
     func fetchWeather() async
 }
 
+@MainActor
 class WeatherStore: WeatherStoreProtocol {
     static let shared = WeatherStore()
 

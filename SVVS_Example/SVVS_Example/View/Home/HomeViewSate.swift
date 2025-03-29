@@ -1,5 +1,47 @@
 import Combine
 import Foundation
+import SwiftUI
+
+struct AlertState: Identifiable {
+    let id = UUID()
+    var title = "メッセージ"
+    var message: String
+    @State var isPresented: Bool = false
+    let error: Error?
+    let info: InfoType?
+
+    enum InfoType {
+        case postSuccess
+
+        var message: String {
+            switch self {
+            case .postSuccess:
+                return "投稿が完了しました!"
+            }
+        }
+    }
+
+    init() {
+        self.isPresented = false
+        self.error = nil
+        self.info = nil
+        self.message = ""
+    }
+
+    init(error: Error) {
+        self.error = error
+        self.message = "エラーが発生しました: \(error.localizedDescription)"
+        self.isPresented = true
+        self.info = nil
+    }
+
+    init(info: InfoType) {
+        self.info = info
+        self.message = info.message
+        self.isPresented = true
+        self.error = nil
+    }
+}
 
 @MainActor
 class HomeViewState: ObservableObject {
@@ -7,17 +49,21 @@ class HomeViewState: ObservableObject {
     private let postStore: any PostStoreProtocol
     private let weatherStore: any WeatherStoreProtocol
     @Published var user: User?
-    @Published var alertMessage: String?
+    @Published var alertState: AlertState
     @Published var shouldLogout: Bool = false
+    @Published var weather: String?
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(userStore: any UserStoreProtocol = UserStore.shared,
-         postStore: any PostStoreProtocol = PostStore.shared,
-         weatherStore: any WeatherStoreProtocol = WeatherStore.shared) {
+    init(
+        userStore: any UserStoreProtocol = UserStore.shared,
+        postStore: any PostStoreProtocol = PostStore.shared,
+        weatherStore: any WeatherStoreProtocol = WeatherStore.shared
+    ) {
         self.userStore = userStore
         self.postStore = postStore
         self.weatherStore = weatherStore
+        self.alertState = .init()
         self.setupStoreBindings()
     }
 
@@ -38,7 +84,6 @@ class HomeViewState: ObservableObject {
             .sink { [weak self] response in
                 if response?.result == "Success" {
                     self?.shouldLogout = true
-                    self?.alertMessage = "ログアウトしました"
                 }
             }
             .store(in: &cancellables)
@@ -46,7 +91,7 @@ class HomeViewState: ObservableObject {
         self.userStore.errorPublisher
             .sink { [weak self] error in
                 if let error = error {
-                    self?.alertMessage = "エラーが発生しました: \(error.localizedDescription)"
+                    self?.alertState = .init(error: error)
                 }
             }
             .store(in: &cancellables)
@@ -54,17 +99,16 @@ class HomeViewState: ObservableObject {
 
     private func bindPostStore() {
         self.postStore.postResponsePublisher
-            .sink { [weak self] response in
-                if let response = response {
-                    self?.alertMessage = "ポストに成功しました: \(response.result)"
-                }
+            .compactMap({$0})
+            .sink { [weak self] _ in
+                self?.alertState = AlertState(info: .postSuccess)
             }
             .store(in: &cancellables)
 
         self.postStore.errorPublisher
             .sink { [weak self] error in
                 if let error = error {
-                    self?.alertMessage = "ポストに失敗しました: \(error.localizedDescription)"
+                    self?.alertState = .init(error: error)
                 }
             }
             .store(in: &cancellables)
@@ -73,16 +117,14 @@ class HomeViewState: ObservableObject {
     private func bindWeatherStore() {
         self.weatherStore.weatherResponsePublisher
             .sink { [weak self] response in
-                if let weather = response?.weather {
-                    self?.alertMessage = "天気情報: \(weather)"
-                }
+                self?.weather = response?.weather
             }
             .store(in: &cancellables)
 
         self.weatherStore.errorPublisher
             .sink { [weak self] error in
                 if let error = error {
-                    self?.alertMessage = "天気情報の取得に失敗しました: \(error.localizedDescription)"
+                    self?.alertState = .init(error: error)
                 }
             }
             .store(in: &cancellables)
@@ -103,5 +145,9 @@ class HomeViewState: ObservableObject {
 
     func onWeatherTapped() async {
         await self.weatherStore.fetchWeather()
+    }
+
+    func onAlertConfirmed(alertState: AlertState) {
+        self.alertState = .init()
     }
 }

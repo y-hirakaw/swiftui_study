@@ -1,15 +1,17 @@
 import Combine
 import Foundation
 
+@MainActor
 protocol UserStoreProtocol: AnyObject {
-    var userPublisher: AnyPublisher<User?, Never> { get }
-    var errorPublisher: AnyPublisher<Error?, Never> { get }
-    var logoutResponsePublisher: AnyPublisher<LogoutResponse?, Never> { get }
+    var userPublisher: Published<User?>.Publisher { get }
+    var errorPublisher: Published<Error?>.Publisher { get }
+    var logoutResponsePublisher: Published<LogoutResponse?>.Publisher { get }
     func login(_ userId: String, _ password: String) async
     func logout() async
 }
 
-actor UserStore: UserStoreProtocol {
+@MainActor
+class UserStore: ObservableObject, UserStoreProtocol {
     static let shared = UserStore()
 
     @Published private(set) var user: User?
@@ -22,16 +24,16 @@ actor UserStore: UserStoreProtocol {
         self.repository = repository
     }
 
-    var userPublisher: AnyPublisher<User?, Never> {
-        $user.eraseToAnyPublisher()
+    var userPublisher: Published<User?>.Publisher {
+        $user
     }
 
-    var errorPublisher: AnyPublisher<Error?, Never> {
-        $error.eraseToAnyPublisher()
+    var errorPublisher: Published<Error?>.Publisher {
+        $error
     }
 
-    var logoutResponsePublisher: AnyPublisher<LogoutResponse?, Never> {
-        $logoutResponse.eraseToAnyPublisher()
+    var logoutResponsePublisher: Published<LogoutResponse?>.Publisher {
+        $logoutResponse
     }
 
     func login(_ userId: String, _ password: String) async {

@@ -1,12 +1,14 @@
 import Combine
 import Foundation
 
+@MainActor
 protocol PostStoreProtocol: AnyObject {
     var postResponsePublisher: Published<PostResponse?>.Publisher { get }
     var errorPublisher: Published<Error?>.Publisher { get }
     func post() async
 }
 
+@MainActor
 class PostStore: PostStoreProtocol {
     static let shared = PostStore()
 
