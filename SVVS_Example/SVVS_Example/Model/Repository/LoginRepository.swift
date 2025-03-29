@@ -2,17 +2,28 @@ import Foundation
 
 protocol LoginRepositoryProtocol: Sendable {
     func login(_ userId: String, _ password: String) async throws -> User
+    func logout() async throws -> LogoutResponse
 }
 
 struct LoginRepository: LoginRepositoryProtocol {
 
-    /// ログインを実施する
-    /// - Parameters:
-    ///   - userId: ユーザID
-    ///   - password: パスワード
-    /// - Returns: ログインしたユーザ情報
     func login(_ userId: String, _ password: String) async throws -> User {
-        try await Task.sleep(nanoseconds: 1_000_000_000) // 1秒待つ
+        try await Task.sleep(nanoseconds: 1_000_000_000) // Simulate 1-second delay
+        if Bool.random() {
+            throw [NetworkError.serverError, DomainError.invalidCredentials].randomElement()!
+        }
         return User(id: "12345", name: "太郎")
     }
+
+    func logout() async throws -> LogoutResponse {
+        try await Task.sleep(nanoseconds: 1_000_000_000) // Simulate 1-second delay
+        if Bool.random() {
+            throw [NetworkError.serverError, DomainError.sessionExpired].randomElement()!
+        }
+        return LogoutResponse(result: "Success")
+    }
+}
+
+struct LogoutResponse: Codable {
+    let result: String
 }
