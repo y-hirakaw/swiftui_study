@@ -1,53 +1,9 @@
 import Combine
 import Foundation
-import SwiftUI
-
-struct AlertState: Identifiable {
-    let id = UUID()
-    var title = "メッセージ"
-    var message: String
-    @State var isPresented: Bool = false
-    let error: Error?
-    let info: InfoType?
-
-    enum InfoType {
-        case postSuccess
-
-        var message: String {
-            switch self {
-            case .postSuccess:
-                return "投稿が完了しました!"
-            }
-        }
-    }
-
-    init() {
-        self.isPresented = false
-        self.error = nil
-        self.info = nil
-        self.message = ""
-    }
-
-    init(error: Error) {
-        self.error = error
-        self.message = "エラーが発生しました: \(error.localizedDescription)"
-        self.isPresented = true
-        self.info = nil
-    }
-
-    init(info: InfoType) {
-        self.info = info
-        self.message = info.message
-        self.isPresented = true
-        self.error = nil
-    }
-}
 
 @MainActor
 class HomeViewState: ObservableObject {
-    private let userStore: any UserStoreProtocol
-    private let postStore: any PostStoreProtocol
-    private let weatherStore: any WeatherStoreProtocol
+    private let homeUseCase: any HomeUseCaseProtocol
     @Published var user: User?
     @Published var alertState: AlertState
     @Published var shouldLogout: Bool = false
@@ -55,32 +11,17 @@ class HomeViewState: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(
-        userStore: any UserStoreProtocol = UserStore.shared,
-        postStore: any PostStoreProtocol = PostStore.shared,
-        weatherStore: any WeatherStoreProtocol = WeatherStore.shared
-    ) {
-        self.userStore = userStore
-        self.postStore = postStore
-        self.weatherStore = weatherStore
+    init(homeUseCase: any HomeUseCaseProtocol = HomeUseCase()) {
+        self.homeUseCase = homeUseCase
         self.alertState = .init()
-        self.setupStoreBindings()
+        self.setupUseCaseBindings()
     }
 
-    func setupStoreBindings() {
-        self.bindUserStore()
-        self.bindPostStore()
-        self.bindWeatherStore()
-    }
+    func setupUseCaseBindings() {
+        self.homeUseCase.userPublisher
+            .assign(to: &$user)
 
-    private func bindUserStore() {
-        self.userStore.userPublisher
-            .sink { [weak self] user in
-                self?.user = user
-            }
-            .store(in: &cancellables)
-
-        self.userStore.logoutResponsePublisher
+        self.homeUseCase.logoutResponsePublisher
             .sink { [weak self] response in
                 if response?.result == "Success" {
                     self?.shouldLogout = true
@@ -88,40 +29,20 @@ class HomeViewState: ObservableObject {
             }
             .store(in: &cancellables)
 
-        self.userStore.errorPublisher
-            .sink { [weak self] error in
-                if let error = error {
-                    self?.alertState = .init(error: error)
-                }
-            }
-            .store(in: &cancellables)
-    }
-
-    private func bindPostStore() {
-        self.postStore.postResponsePublisher
-            .compactMap({$0})
+        self.homeUseCase.postResponsePublisher
+            .compactMap({ $0 })
             .sink { [weak self] _ in
                 self?.alertState = AlertState(info: .postSuccess)
             }
             .store(in: &cancellables)
 
-        self.postStore.errorPublisher
-            .sink { [weak self] error in
-                if let error = error {
-                    self?.alertState = .init(error: error)
-                }
-            }
-            .store(in: &cancellables)
-    }
-
-    private func bindWeatherStore() {
-        self.weatherStore.weatherResponsePublisher
+        self.homeUseCase.weatherResponsePublisher
             .sink { [weak self] response in
                 self?.weather = response?.weather
             }
             .store(in: &cancellables)
 
-        self.weatherStore.errorPublisher
+        self.homeUseCase.errorPublisher
             .sink { [weak self] error in
                 if let error = error {
                     self?.alertState = .init(error: error)
@@ -136,15 +57,15 @@ class HomeViewState: ObservableObject {
     }
 
     func onLogoutTapped() async {
-        await self.userStore.logout()
+        await self.homeUseCase.logout()
     }
 
     func onPostTapped() async {
-        await self.postStore.post()
+        await self.homeUseCase.post()
     }
 
     func onWeatherTapped() async {
-        await self.weatherStore.fetchWeather()
+        await self.homeUseCase.fetchWeather()
     }
 
     func onAlertConfirmed(alertState: AlertState) {
