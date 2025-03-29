@@ -27,19 +27,21 @@ class UserStore: UserStoreProtocol {
     }
 
     func login(_ userId: String, _ password: String) async {
+        self.error = nil
         do {
-            let user = try await repository.login(userId, password)
-            self.user = user
+            self.user = try await repository.login(userId, password)
         } catch {
+            self.user = nil
             self.error = error
         }
     }
 
     func logout() async {
+        self.error = nil
         do {
-            let response = try await repository.logout()
-            self.logoutResponse = response
+            self.logoutResponse = try await repository.logout()
         } catch {
+            self.logoutResponse = nil
             self.error = error
         }
     }
