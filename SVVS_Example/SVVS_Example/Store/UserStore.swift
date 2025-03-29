@@ -1,37 +1,57 @@
 import Combine
+import Foundation
 
 @MainActor
-protocol UserStoreProtocol: ObservableObject {
+protocol UserStoreProtocol: AnyObject {
     var userPublisher: Published<User?>.Publisher { get }
     var errorPublisher: Published<Error?>.Publisher { get }
+    var logoutResponsePublisher: Published<LogoutResponse?>.Publisher { get }
     func login(_ userId: String, _ password: String) async
+    func logout() async
 }
 
 @MainActor
 class UserStore: ObservableObject, UserStoreProtocol {
-    static var shared = UserStore()
+    static let shared = UserStore()
 
-    let loginRepository: LoginRepositoryProtocol
+    @Published private(set) var user: User?
+    @Published private(set) var error: Error?
+    @Published private(set) var logoutResponse: LogoutResponse?
 
-    @Published var user: User?
-    @Published var error: Error?
-    // プロトコルに準拠するためのPublisher
-    var userPublisher: Published<User?>.Publisher { $user }
-    var errorPublisher: Published<Error?>.Publisher { $error }
+    private let repository: LoginRepositoryProtocol
 
-    init(_ repository: LoginRepositoryProtocol = LoginRepository()) {
-        self.loginRepository = repository
+    private init(repository: LoginRepositoryProtocol = LoginRepository()) {
+        self.repository = repository
+    }
+
+    var userPublisher: Published<User?>.Publisher {
+        $user
+    }
+
+    var errorPublisher: Published<Error?>.Publisher {
+        $error
+    }
+
+    var logoutResponsePublisher: Published<LogoutResponse?>.Publisher {
+        $logoutResponse
     }
 
     func login(_ userId: String, _ password: String) async {
         self.error = nil
         do {
-            self.user = try await self.loginRepository.login(userId, password)
+            self.user = try await repository.login(userId, password)
         } catch {
-            await MainActor.run {
-                self.user = nil
-                self.error = error
-            }
+            self.error = error
+        }
+    }
+
+    func logout() async {
+        self.error = nil
+        do {
+            self.logoutResponse = try await repository.logout()
+        } catch {
+            self.error = error
+            self.logoutResponse = nil
         }
     }
 }
