@@ -2,23 +2,19 @@ import Combine
 import Foundation
 
 protocol UserStoreProtocol: AnyObject {
-    var userPublisher: Published<User?>.Publisher { get }
-    var errorPublisher: Published<Error?>.Publisher { get }
-    var logoutResponsePublisher: Published<LogoutResponse?>.Publisher { get }
+    var userPublisher: AnyPublisher<User?, Never> { get }
+    var errorPublisher: AnyPublisher<Error?, Never> { get }
+    var logoutResponsePublisher: AnyPublisher<LogoutResponse?, Never> { get }
     func login(_ userId: String, _ password: String) async
-    func logout() async throws
+    func logout() async
 }
 
-class UserStore: UserStoreProtocol {
+actor UserStore: UserStoreProtocol {
     static let shared = UserStore()
 
     @Published private(set) var user: User?
     @Published private(set) var error: Error?
     @Published private(set) var logoutResponse: LogoutResponse?
-
-    var userPublisher: Published<User?>.Publisher { $user }
-    var errorPublisher: Published<Error?>.Publisher { $error }
-    var logoutResponsePublisher: Published<LogoutResponse?>.Publisher { $logoutResponse }
 
     private let repository: LoginRepositoryProtocol
 
@@ -26,12 +22,23 @@ class UserStore: UserStoreProtocol {
         self.repository = repository
     }
 
+    var userPublisher: AnyPublisher<User?, Never> {
+        $user.eraseToAnyPublisher()
+    }
+
+    var errorPublisher: AnyPublisher<Error?, Never> {
+        $error.eraseToAnyPublisher()
+    }
+
+    var logoutResponsePublisher: AnyPublisher<LogoutResponse?, Never> {
+        $logoutResponse.eraseToAnyPublisher()
+    }
+
     func login(_ userId: String, _ password: String) async {
         self.error = nil
         do {
             self.user = try await repository.login(userId, password)
         } catch {
-            self.user = nil
             self.error = error
         }
     }
@@ -41,8 +48,8 @@ class UserStore: UserStoreProtocol {
         do {
             self.logoutResponse = try await repository.logout()
         } catch {
-            self.logoutResponse = nil
             self.error = error
+            self.logoutResponse = nil
         }
     }
 }

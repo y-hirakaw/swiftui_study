@@ -27,4 +27,8 @@
 
 # SVVS_Exampleについて
 
-## 
+## ビルド方法
+
+```
+xcodebuild -scheme SVVS_Example -configuration Debug -project SVVS_Example/SVVS_Example.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' -allowProvisioningUpdates build | xcbeautify
+```

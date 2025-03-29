@@ -55,8 +55,8 @@ class HomeViewState: ObservableObject {
     private func bindPostStore() {
         self.postStore.postResponsePublisher
             .sink { [weak self] response in
-                if response?.result == "Success" {
-                    self?.alertMessage = "ポストに成功しました"
+                if let response = response {
+                    self?.alertMessage = "ポストに成功しました: \(response.result)"
                 }
             }
             .store(in: &cancellables)
