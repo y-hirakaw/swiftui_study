@@ -20,18 +20,17 @@ struct AlertState: Identifiable {
         }
     }
 
-    init() {
-        self.isPresented = false
-        self.error = nil
+    init(error: Error?) {
         self.info = nil
-        self.message = ""
-    }
-
-    init(error: Error) {
-        self.error = error
-        self.message = "エラーが発生しました: \(error.localizedDescription)"
-        self.isPresented = true
-        self.info = nil
+        if let error = error {
+            self.isPresented = true
+            self.error = error
+            self.message = "エラーが発生しました: \(error.localizedDescription)"
+        } else {
+            self.isPresented = false
+            self.error = nil
+            self.message = ""
+        }
     }
 
     init(info: InfoType) {

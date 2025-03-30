@@ -13,42 +13,39 @@ class HomeViewState: ObservableObject {
 
     init(homeUseCase: any HomeUseCaseProtocol = HomeUseCase()) {
         self.homeUseCase = homeUseCase
-        self.alertState = .init()
+        self.alertState = .init(error: nil)
         self.setupUseCaseBindings()
     }
 
     func setupUseCaseBindings() {
-        self.homeUseCase.userPublisher
-            .assign(to: &$user)
+        self.bind(
+            self.homeUseCase.userPublisher, to: \.user, storeIn: &cancellables)
 
-        self.homeUseCase.logoutResponsePublisher
-            .sink { [weak self] response in
-                if response?.result == "Success" {
-                    self?.shouldLogout = true
-                }
+        self.bind(
+            self.homeUseCase.logoutResponsePublisher, storeIn: &cancellables
+        ) { [weak self] response in
+            if response?.result == "Success" {
+                self?.shouldLogout = true
             }
-            .store(in: &cancellables)
+        }
 
-        self.homeUseCase.postResponsePublisher
-            .compactMap({ $0 })
-            .sink { [weak self] _ in
-                self?.alertState = AlertState(info: .postSuccess)
-            }
-            .store(in: &cancellables)
+        self.bindSkippingNil(
+            self.homeUseCase.postResponsePublisher, storeIn: &cancellables
+        ) { [weak self] _ in
+            self?.alertState = AlertState(info: .postSuccess)
+        }
 
-        self.homeUseCase.weatherResponsePublisher
-            .sink { [weak self] response in
-                self?.weather = response?.weather
-            }
-            .store(in: &cancellables)
+        self.bind(
+            self.homeUseCase.weatherResponsePublisher, storeIn: &cancellables
+        ) { [weak self] response in
+            self?.weather = response?.weather
+        }
 
-        self.homeUseCase.errorPublisher
-            .sink { [weak self] error in
-                if let error = error {
-                    self?.alertState = .init(error: error)
-                }
-            }
-            .store(in: &cancellables)
+        self.bind(
+            self.homeUseCase.errorPublisher, storeIn: &cancellables
+        ) { [weak self] error in
+            self?.alertState = .init(error: error)
+        }
     }
 
     var userGreeting: String {
@@ -69,6 +66,6 @@ class HomeViewState: ObservableObject {
     }
 
     func onAlertConfirmed(alertState: AlertState) {
-        self.alertState = .init()
+        self.alertState = .init(error: nil)
     }
 }
