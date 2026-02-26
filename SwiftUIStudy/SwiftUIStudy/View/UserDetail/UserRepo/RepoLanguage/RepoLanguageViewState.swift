@@ -1,24 +1,20 @@
-import Combine
 import Foundation
+import Observation
 
+@Observable
 @MainActor
-final class RepoLanguageViewState: ObservableObject {
+final class RepoLanguageViewState {
     // Viewごとに言語情報を持ちたいためsharedにはしない
     private let store: RepoLanguageLocalStore
 
-    @Published private(set) var languages: Languages?
-
-    private var cancellables = Set<AnyCancellable>()
+    var languages: Languages? { store.languages }
 
     init(store: RepoLanguageLocalStore = RepoLanguageLocalStore()) {
         self.store = store
-        self.store.$languages
-            .assign(to: \.languages, on: self)
-            .store(in: &cancellables)
     }
 
     func onAppear(_ userName: String, _ repositoryName: String) async {
-        self.languages = nil
+        store.languages = nil
         await self.store.loadRepoLanguages(userName, repositoryName)
     }
 }

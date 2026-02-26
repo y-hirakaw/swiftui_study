@@ -1,27 +1,21 @@
-import Combine
 import Foundation
+import Observation
 
 @MainActor
-protocol HomeUseCaseProtocol {
-    var userPublisher: Published<User?>.Publisher { get }
-    var logoutResponsePublisher: Published<LogoutResponse?>.Publisher { get }
-    var postResponsePublisher: Published<PostResponse?>.Publisher { get }
-    var weatherResponsePublisher: Published<WeatherResponse?>.Publisher { get }
-    var errorPublisher: Published<Error?>.Publisher { get }
+protocol HomeUseCaseProtocol: AnyObject {
+    var user: User? { get }
+    var logoutResponse: LogoutResponse? { get }
+    var postResponse: PostResponse? { get }
+    var weatherResponse: WeatherResponse? { get }
 
-    func logout() async
-    func post() async
-    func fetchWeather() async
+    func logout() async throws
+    func post() async throws
+    func fetchWeather() async throws
 }
 
+@Observable
 @MainActor
 class HomeUseCase: HomeUseCaseProtocol {
-    @Published private var user: User?
-    @Published private var logoutResponse: LogoutResponse?
-    @Published private var postResponse: PostResponse?
-    @Published private var weatherResponse: WeatherResponse?
-    @Published private var error: Error?
-
     private let userStore: any UserStoreProtocol
     private let postStore: any PostStoreProtocol
     private let weatherStore: any WeatherStoreProtocol
@@ -34,46 +28,22 @@ class HomeUseCase: HomeUseCaseProtocol {
         self.userStore = userStore
         self.postStore = postStore
         self.weatherStore = weatherStore
-
-        self.setupBindings()
     }
 
-    var userPublisher: Published<User?>.Publisher { $user }
-    var logoutResponsePublisher: Published<LogoutResponse?>.Publisher { $logoutResponse }
-    var postResponsePublisher: Published<PostResponse?>.Publisher { $postResponse }
-    var weatherResponsePublisher: Published<WeatherResponse?>.Publisher { $weatherResponse }
-    var errorPublisher: Published<Error?>.Publisher { $error }
+    var user: User? { userStore.user }
+    var logoutResponse: LogoutResponse? { userStore.logoutResponse }
+    var postResponse: PostResponse? { postStore.postResponse }
+    var weatherResponse: WeatherResponse? { weatherStore.weatherResponse }
 
-    private func setupBindings() {
-        self.userStore.userPublisher
-            .assign(to: &$user)
-
-        self.userStore.logoutResponsePublisher
-            .assign(to: &$logoutResponse)
-
-        self.postStore.postResponsePublisher
-            .assign(to: &$postResponse)
-
-        self.weatherStore.weatherResponsePublisher
-            .assign(to: &$weatherResponse)
-
-        Publishers.Merge3(
-            self.userStore.errorPublisher,
-            self.postStore.errorPublisher,
-            self.weatherStore.errorPublisher
-        )
-        .assign(to: &$error)
+    func logout() async throws {
+        try await userStore.logout()
     }
 
-    func logout() async {
-        await userStore.logout()
+    func post() async throws {
+        try await postStore.post()
     }
 
-    func post() async {
-        await postStore.post()
-    }
-
-    func fetchWeather() async {
-        await weatherStore.fetchWeather()
+    func fetchWeather() async throws {
+        try await weatherStore.fetchWeather()
     }
 }

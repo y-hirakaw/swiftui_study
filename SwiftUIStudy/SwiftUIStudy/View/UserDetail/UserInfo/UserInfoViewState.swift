@@ -1,22 +1,15 @@
-import Combine
 import Foundation
+import Observation
 
+@Observable
 @MainActor
-final class UserInfoViewState: ObservableObject {
+final class UserInfoViewState {
     private let store: UserInfoStore = .shared
 
-    @Published private(set) var userInfo: UserDetail?
-
-    private var cancellables = Set<AnyCancellable>()
-
-    init() {
-        self.store.$userInfo
-            .assign(to: \.userInfo, on: self)
-            .store(in: &cancellables)
-    }
+    var userInfo: UserDetail? { store.userInfo }
 
     func onAppear(_ user: SearchUsers.User) async {
-        self.userInfo = nil
+        store.userInfo = nil
         await self.store.loadUserInfo(user.userName)
     }
 }

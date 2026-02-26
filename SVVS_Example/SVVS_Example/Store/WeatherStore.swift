@@ -1,36 +1,26 @@
-import Combine
 import Foundation
+import Observation
 
 @MainActor
 protocol WeatherStoreProtocol: AnyObject {
-    var weatherResponsePublisher: Published<WeatherResponse?>.Publisher { get }
-    var errorPublisher: Published<Error?>.Publisher { get }
-    func fetchWeather() async
+    var weatherResponse: WeatherResponse? { get }
+    func fetchWeather() async throws
 }
 
+@Observable
 @MainActor
 class WeatherStore: WeatherStoreProtocol {
     static let shared = WeatherStore()
 
-    @Published private(set) var weatherResponse: WeatherResponse?
-    @Published private(set) var error: Error?
-
-    var weatherResponsePublisher: Published<WeatherResponse?>.Publisher { $weatherResponse }
-    var errorPublisher: Published<Error?>.Publisher { $error }
+    private(set) var weatherResponse: WeatherResponse?
 
     private let repository: WeatherRepositoryProtocol
 
-    private init(repository: WeatherRepositoryProtocol = WeatherRepository()) {
+    init(repository: WeatherRepositoryProtocol = WeatherRepository()) {
         self.repository = repository
     }
 
-    func fetchWeather() async {
-        self.error = nil
-        do {
-            self.weatherResponse = try await repository.fetchWeather()
-        } catch {
-            self.error = error
-            self.weatherResponse = nil
-        }
+    func fetchWeather() async throws {
+        self.weatherResponse = try await repository.fetchWeather()
     }
 }

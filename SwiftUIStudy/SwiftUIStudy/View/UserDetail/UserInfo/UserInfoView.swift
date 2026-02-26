@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct UserInfoView: View {
-    @StateObject private var state: UserInfoViewState
+    @State private var state: UserInfoViewState
     let user: SearchUsers.User
 
     init(_ user: SearchUsers.User) {
-        self._state = .init(wrappedValue: .init())
+        self._state = State(initialValue: .init())
         self.user = user
     }
 

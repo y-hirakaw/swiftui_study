@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct SearchUsersView: View {
-    @StateObject private var state: SearchUsersViewState
+    @State private var state: SearchUsersViewState
 
     init(state: SearchUsersViewState = SearchUsersViewState()) {
-        self._state = .init(wrappedValue: state)
+        self._state = State(initialValue: state)
     }
 
     var body: some View {

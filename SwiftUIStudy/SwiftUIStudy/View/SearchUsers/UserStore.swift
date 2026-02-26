@@ -1,18 +1,20 @@
-import Combine
 import Dependencies
+import Observation
 
 // protocol UserStoreProtocol: Sendable {
 //    func searchUsers(query: String) async
 // }
 
+@Observable
 @MainActor
-class UserStore: ObservableObject {
+class UserStore {
     static var shared: UserStore = .init()
 
+    @ObservationIgnored
     @Dependency(\.searchUsersRepository) private var searchUsersRepository
 
-    @Published var users: SearchUsers?
-    @Published var errorMessage: String?
+    var users: SearchUsers?
+    var errorMessage: String?
 
     func searchUsers(query: String) async {
         do {

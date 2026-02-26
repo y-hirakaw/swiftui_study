@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var state: HomeViewState
+    @State private var state: HomeViewState
 
     init(state: HomeViewState = HomeViewState()) {
-        self._state = .init(wrappedValue: state)
+        self._state = State(initialValue: state)
     }
 
     var body: some View {

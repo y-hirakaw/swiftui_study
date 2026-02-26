@@ -1,71 +1,58 @@
-import Combine
 import Foundation
+import Observation
 
+@Observable
 @MainActor
-class HomeViewState: ObservableObject {
+class HomeViewState {
     private let homeUseCase: any HomeUseCaseProtocol
-    @Published var user: User?
-    @Published var alertState: AlertState
-    @Published var shouldLogout: Bool = false
-    @Published var weather: String?
-
-    private var cancellables = Set<AnyCancellable>()
+    var alertState: AlertState
+    var shouldLogout: Bool = false
+    var weather: String?
 
     init(homeUseCase: any HomeUseCaseProtocol = HomeUseCase()) {
         self.homeUseCase = homeUseCase
         self.alertState = .init(error: nil)
-        self.setupUseCaseBindings()
-    }
-
-    func setupUseCaseBindings() {
-        self.bind(
-            self.homeUseCase.userPublisher, to: \.user, storeIn: &cancellables)
-
-        self.bind(
-            self.homeUseCase.logoutResponsePublisher, storeIn: &cancellables
-        ) { [weak self] response in
-            if response?.result == "Success" {
-                self?.shouldLogout = true
-            }
-        }
-
-        self.bindSkippingNil(
-            self.homeUseCase.postResponsePublisher, storeIn: &cancellables
-        ) { [weak self] _ in
-            self?.alertState = AlertState(info: .postSuccess)
-        }
-
-        self.bind(
-            self.homeUseCase.weatherResponsePublisher, storeIn: &cancellables
-        ) { [weak self] response in
-            self?.weather = response?.weather
-        }
-
-        self.bind(
-            self.homeUseCase.errorPublisher, storeIn: &cancellables
-        ) { [weak self] error in
-            self?.alertState = .init(error: error)
-        }
     }
 
     var userGreeting: String {
-        guard let user else { return "名前が取得できません" }
+        guard let user = homeUseCase.user else { return "名前が取得できません" }
         return "こんにちは \(user.name)さん"
     }
 
     func onLogoutTapped() async {
-        await self.homeUseCase.logout()
+        await perform {
+            try await self.homeUseCase.logout()
+            if self.homeUseCase.logoutResponse?.result == "Success" {
+                self.shouldLogout = true
+            }
+        }
     }
 
     func onPostTapped() async {
-        await self.homeUseCase.post()
+        await perform {
+            try await self.homeUseCase.post()
+            if self.homeUseCase.postResponse != nil {
+                self.alertState = AlertState(info: .postSuccess)
+            }
+        }
     }
 
     func onWeatherTapped() async {
-        await self.homeUseCase.fetchWeather()
+        await perform {
+            try await self.homeUseCase.fetchWeather()
+            self.weather = self.homeUseCase.weatherResponse?.weather
+        }
     }
 
     func onAlertConfirmed(alertState: AlertState) {
         self.alertState = .init(error: nil)
+    }
+
+    private func perform(_ action: () async throws -> Void) async {
+        do {
+            try await action()
+        } catch {
+            self.alertState = .init(error: error)
+        }
     }
 }

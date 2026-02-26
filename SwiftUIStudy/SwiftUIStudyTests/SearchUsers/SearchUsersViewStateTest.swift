@@ -1,11 +1,10 @@
-import Combine
 import Testing
 
 @testable import SwiftUIStudy
 
 @MainActor
 class MockUserStore: UserStore {
-    @Published var isCalledSearchUsers: Bool = false
+    var isCalledSearchUsers: Bool = false
 
     override func searchUsers(query: String) async {
         self.isCalledSearchUsers = true
@@ -50,19 +49,10 @@ struct SearchUsersViewStateTest {
     }
 
     @Test func searchTextが変わった時にsearch関数が呼び出されること() async {
-        var cancellables = Set<AnyCancellable>()
-        await confirmation { confirmation in
-            self.mockStore.$isCalledSearchUsers
-                .filter { $0 == true }
-                .sink { _ in
-                    confirmation()
-                }
-                .store(in: &cancellables)
-            self.state.searchText = "test"
-            // 0.6秒待つ、もっといい方法は無いか
-            try? await Task.sleep(nanoseconds: 600_000_000)
-        }
-
+        self.state.searchText = "test"
+        // デバウンス(0.5秒)待ち
+        try? await Task.sleep(nanoseconds: 600_000_000)
+        #expect(self.mockStore.isCalledSearchUsers == true)
     }
 
 }

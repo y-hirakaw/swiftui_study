@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct UserRepoView: View {
-    @StateObject private var state: UserRepoViewState
+    @State private var state: UserRepoViewState
     let user: SearchUsers.User
 
     init(_ user: SearchUsers.User) {
-        self._state = .init(wrappedValue: .init())
+        self._state = State(initialValue: .init())
         self.user = user
     }
 

@@ -1,22 +1,15 @@
-import Combine
 import Foundation
+import Observation
 
+@Observable
 @MainActor
-final class UserRepoViewState: ObservableObject {
+final class UserRepoViewState {
     private let store: UserRepoStore = .shared
 
-    @Published private(set) var repositories: [Repositories.Repository]?
-
-    private var cancellables = Set<AnyCancellable>()
-
-    init() {
-        self.store.$repositories
-            .assign(to: \.repositories, on: self)
-            .store(in: &cancellables)
-    }
+    var repositories: [Repositories.Repository]? { store.repositories }
 
     func onAppear(_ user: SearchUsers.User) async {
-        self.repositories = nil
+        store.repositories = nil
         await self.store.loadUserRepositories(user.userName)
     }
 }

@@ -1,13 +1,15 @@
-import Combine
 import Dependencies
+import Observation
 
+@Observable
 @MainActor
-final class UserRepoStore: ObservableObject {
+final class UserRepoStore {
     static let shared: UserRepoStore = .init()
 
+    @ObservationIgnored
     @Dependency(\.userRepoRepository) private var userRepoRepository
 
-    @Published var repositories: [Repositories.Repository]?
+    var repositories: [Repositories.Repository]?
 
     func loadUserRepositories(_ userName: String) async {
         do {

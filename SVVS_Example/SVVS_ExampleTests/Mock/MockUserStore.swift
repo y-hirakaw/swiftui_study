@@ -1,19 +1,27 @@
 import Testing
-import Combine
+import Observation
 
 @testable import SVVS_Example
 
+@Observable
 @MainActor
 class MockUserStore: UserStoreProtocol {
-    @Published var user: User? = nil
-    @Published var error: Error? = nil
+    var user: User? = nil
+    var logoutResponse: LogoutResponse? = nil
 
-    var userPublisher: Published<User?>.Publisher { $user }
-    var errorPublisher: Published<Error?>.Publisher { $error }
+    var loginError: Error?
+    var logoutError: Error?
 
     private(set) var isLoginCalled = false
+    private(set) var isLogoutCalled = false
 
-    func login(_ userId: String, _ password: String) async {
+    func login(_ userId: String, _ password: String) async throws {
         isLoginCalled = true
+        if let loginError { throw loginError }
+    }
+
+    func logout() async throws {
+        isLogoutCalled = true
+        if let logoutError { throw logoutError }
     }
 }

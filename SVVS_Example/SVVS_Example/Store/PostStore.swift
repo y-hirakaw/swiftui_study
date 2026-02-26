@@ -1,36 +1,26 @@
-import Combine
 import Foundation
+import Observation
 
 @MainActor
 protocol PostStoreProtocol: AnyObject {
-    var postResponsePublisher: Published<PostResponse?>.Publisher { get }
-    var errorPublisher: Published<Error?>.Publisher { get }
-    func post() async
+    var postResponse: PostResponse? { get }
+    func post() async throws
 }
 
+@Observable
 @MainActor
 class PostStore: PostStoreProtocol {
     static let shared = PostStore()
 
-    @Published private(set) var postResponse: PostResponse?
-    @Published private(set) var error: Error?
-
-    var postResponsePublisher: Published<PostResponse?>.Publisher { $postResponse }
-    var errorPublisher: Published<Error?>.Publisher { $error }
+    private(set) var postResponse: PostResponse?
 
     private let repository: PostRepositoryProtocol
 
-    private init(repository: PostRepositoryProtocol = PostRepository()) {
+    init(repository: PostRepositoryProtocol = PostRepository()) {
         self.repository = repository
     }
 
-    func post() async {
-        self.error = nil
-        do {
-            self.postResponse = try await repository.post()
-        } catch {
-            self.error = error
-            self.postResponse = nil
-        }
+    func post() async throws {
+        self.postResponse = try await repository.post()
     }
 }

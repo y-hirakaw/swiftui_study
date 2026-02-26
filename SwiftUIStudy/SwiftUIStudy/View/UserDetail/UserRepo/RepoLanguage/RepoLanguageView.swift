@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct RepoLanguageView: View {
-    @StateObject private var state: RepoLanguageViewState
+    @State private var state: RepoLanguageViewState
     let userName: String
     let repositoryName: String
 
     init(_ userName: String, _ repositoryName: String) {
-        self._state = .init(wrappedValue: .init())
+        self._state = State(initialValue: .init())
         self.userName = userName
         self.repositoryName = repositoryName
     }

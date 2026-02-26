@@ -1,4 +1,3 @@
-import Combine
 import Testing
 import ViewInspector
 
@@ -6,7 +5,7 @@ import ViewInspector
 
 @MainActor
 final class MockSearchUsersViewState: SearchUsersViewState {
-    @Published private(set) var isCalledSearch: Bool = false
+    private(set) var isCalledSearch: Bool = false
 
     override func search() async {
         self.isCalledSearch = true
@@ -24,17 +23,9 @@ struct SearchUsersViewTest {
     }
 
     @Test func 検索文字列が変わった時stateのseachが呼ばれる() async throws {
-        var cancellables = Set<AnyCancellable>()
-        await confirmation { confirmation in
-            self.mockState.$isCalledSearch
-                .filter { $0 == true }
-                .sink { _ in
-                    confirmation()
-                }
-                .store(in: &cancellables)
-            self.mockState.searchText = "test"
-            // 0.6秒待つ、もっといい方法は無いか
-            try? await Task.sleep(nanoseconds: 600_000_000)
-        }
+        self.mockState.searchText = "test"
+        // デバウンス(0.5秒)待ち
+        try? await Task.sleep(nanoseconds: 600_000_000)
+        #expect(self.mockState.isCalledSearch == true)
     }
 }
